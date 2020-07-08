@@ -25,7 +25,9 @@ python yolo_video.py --image
 
 ### B. セルフレジ用起動方法（仮）
 ```
-python predict.py
+python predict.py --camera # カメラ検出モード
+python predict.py --file # ファイル検出モード
 ```
 >- セルフレジ用に特化するため、yolo_video.pyから不要なinput argumentsを削除
 >- 推定画像の出力機能を追加（path: /output/result_[file name].jpg）
+>- カメラ・ファイル入力に対応
