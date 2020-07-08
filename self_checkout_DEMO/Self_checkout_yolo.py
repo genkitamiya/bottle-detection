@@ -8,7 +8,7 @@ import numpy as np
 import picamera
 from PIL import Image
 from time import sleep
-from yolo import YOLO, detect_video
+from yolo import YOLO
 
 photo_filename = '/tmp/data.jpg'
 
@@ -28,6 +28,7 @@ if __name__ == '__main__':
     # モデル+重みを読込み
     #self_model = load_model('MobileNet_auto_fine3_150_3.h5')
     # self_model = load_model('MobileNet_shape224.h5')
+    yolo = Yolo()
 
     # 音声ファイル初期化
     pygame.mixer.init()
@@ -61,11 +62,11 @@ if __name__ == '__main__':
 
             # predict
             pred, score, image = yolo.detect_image(img)
-            print("debug:",score)
-            name = label[pred]
-            print(name)
-            money_sum += money[name]
-            print("小計",money_sum)
+            # print("debug:",score)
+            # name = label[pred]
+            # print(name)
+            # money_sum += money[name]
+            # print("小計",money_sum)
             key = input('続けて商品をスキャンする場合は「y」,会計する場合は「Enter」を押して下さい')
             if key != 'y':
                 print("合計:{}円".format(money_sum))

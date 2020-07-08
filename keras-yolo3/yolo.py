@@ -164,7 +164,7 @@ class YOLO(object):
 
         end = timer()
         print(end - start)
-        return predicted_class, score, image
+        return out_classes, out_scores, image
 
     def close_session(self):
         self.sess.close()
