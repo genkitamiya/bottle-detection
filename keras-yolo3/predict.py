@@ -74,7 +74,7 @@ if __name__ == '__main__':
                 output_dir = 'output/'
                 _, file_name = ntpath.split(img)
 
-            pred, score, r_image = yolo.detect_image(image)
-            r_image.save(output_dir + 'result_{}.jpg'.format(file_name.replace('.jpg', '')))
+                pred, score, r_image = yolo.detect_image(image)
+                r_image.save(output_dir + 'result_{}.jpg'.format(file_name.replace('.jpg', '')))
 
     yolo.close_session()
