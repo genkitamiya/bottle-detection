@@ -8,7 +8,8 @@
   - tiny-yolo（2020/07/08 動作確認済み）
 
 ## self_checkout_DEMO
-セルフレジ実行スクリプトのデモ（2020/07/08 モデルをtiny-yoloに書き換え中）
+デモです！
+- Self_checkout_yolo.py: セルフレジ実行スクリプトのデモ（2020/07/08 モデルをtiny-yoloに書き換え中）
 ## yolov3.weights & yolov3-tiny.weights
 学習済みの重み
 
