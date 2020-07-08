@@ -15,9 +15,8 @@ if __name__ == '__main__':
         else:
             output_dir = 'output/'
             _, file_name = ntpath.split(img)
-            
-            r_image = YOLO().detect_image(image)
+
+            pred, score, r_image = YOLO().detect_image(image)
             r_image.save(output_dir + 'result_{}.jpg'.format(file_name.replace('.jpg', '')))
-        
+
     yolo.close_session()
-    

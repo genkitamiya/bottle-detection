@@ -164,7 +164,7 @@ class YOLO(object):
 
         end = timer()
         print(end - start)
-        return image
+        return predicted_class, score, image
 
     def close_session(self):
         self.sess.close()
@@ -209,4 +209,3 @@ def detect_video(yolo, video_path, output_path=""):
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
     yolo.close_session()
-
