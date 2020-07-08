@@ -7,3 +7,5 @@ yolo検出のやつ
 デモ
 ## yolov3.weights
 学習済みの重み
+
+git push test
