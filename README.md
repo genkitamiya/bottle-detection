@@ -4,7 +4,7 @@
 ## keras-yolo3
 yolo検出のやつ
 ## self_checkout_DEMO
-デモ
+デモです！！！
 ## yolov3.weights
 学習済みの重み
 
