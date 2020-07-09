@@ -8,6 +8,8 @@ from datetime import datetime
 from yolo import YOLO
 from PIL import Image
 from time import sleep
+import os
+from contextlib import redirect_stdout
 
 # warning処理
 import warnings
@@ -47,7 +49,7 @@ def scan():
         pred, score, r_image = yolo.detect_image(image)
         r_image.save(output_dir + 'result_{}_{}.jpg'.format(file_name.replace('.jpg', ''), time))
         plt.imshow(r_image)
-        plt.show()
+        _ = plt.show()
 
     return pred, score
 
@@ -92,7 +94,8 @@ if __name__ == '__main__':
     # セルフレジシステム起動
     while True:
         # 起動時処理
-        initialize_model()
+        with redirect_stdout(open(os.devnull, 'w')):
+            initialize_model()
 
         tmp = input('Welcome!(press enter)')
         # 'q'が入力されたら終了する
@@ -127,7 +130,7 @@ if __name__ == '__main__':
                     pred, score, r_image = yolo.detect_image(image)
                     r_image.save(output_dir + 'result_{}.jpg'.format(file_name.replace('.jpg', '')))
                     plt.imshow(r_image)
-                    plt.show()
+                    _ = plt.show()
             
             # 未登録商品検出(消すかも)
             if not all([is_registered(x) for x in pred]):
