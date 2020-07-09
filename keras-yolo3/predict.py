@@ -1,9 +1,12 @@
+import numpy as np
 import sys
 import argparse
 import ntpath
 import picamera
+from datetime import datetime
 from yolo import YOLO
 from PIL import Image
+from time import sleep
 
 photo_filename = '/tmp/data.jpg'
 
@@ -55,8 +58,10 @@ if __name__ == '__main__':
                 output_dir = 'output/'
                 _, file_name = ntpath.split(photo_filename)
 
+                time = datetime.now().strftime('%Y%m%d%H%M%S')
+                
                 pred, score, r_image = yolo.detect_image(image)
-                r_image.save(output_dir + 'result_{}.jpg'.format(file_name.replace('.jpg', '')))
+                r_image.save(output_dir + 'result_{}_{}.jpg'.format(file_name.replace('.jpg', ''), time))
 
 
     elif FLAGS.file:
