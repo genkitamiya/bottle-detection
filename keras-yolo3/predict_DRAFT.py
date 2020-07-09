@@ -47,20 +47,17 @@ def scan():
         pred, score, r_image = yolo.detect_image(image)
         r_image.save(output_dir + 'result_{}_{}.jpg'.format(file_name.replace('.jpg', ''), time))
         plt.imshow(r_image)
+        plt.show()
 
     return pred, score
 
-def detect_item(pred):
+def initialize_model():
     """
-    return:
-      会計対象商品: list
-        会計対象となる商品のdictionary内idのlist
-      再読み込みflag: bool
-        Trueの場合再読み込み
+    システム起動時処理
+    yoloの準備運動
     """
-
-
-    return items, False
+    image = Image.open('../samples/output.jpg')
+    _, _, _ = yolo.detect_image(image)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(argument_default=argparse.SUPPRESS)
@@ -92,9 +89,16 @@ if __name__ == '__main__':
     # class_names = class_dic['39'][0]
     # prices = class_dic['39'][1]
 
+    # セルフレジシステム起動
     while True:
-        input('Welcome!(press enter)')
-        
+        # 起動時処理
+        initialize_model()
+
+        tmp = input('Welcome!(press enter)')
+        # 'q'が入力されたら終了する
+        if tmp == 'q':
+            break
+
         # 会計開始
         checkout_list = []
         while True:
@@ -123,6 +127,7 @@ if __name__ == '__main__':
                     pred, score, r_image = yolo.detect_image(image)
                     r_image.save(output_dir + 'result_{}.jpg'.format(file_name.replace('.jpg', '')))
                     plt.imshow(r_image)
+                    plt.show()
             
             # 未登録商品検出(消すかも)
             if not all([is_registered(x) for x in pred]):
@@ -158,7 +163,7 @@ if __name__ == '__main__':
                     break
 
                 # pred内のindexから商品IDに変換する
-                items = [pred[x] for x in prid_ids]
+                items = [pred[x] for x in prod_ids]
                 # カゴに追加
                 checkout_list.extend(items)
 
@@ -179,4 +184,5 @@ if __name__ == '__main__':
         print('合計金額は¥{}です。'.format(sum([class_dic[x][1] for x in checkout_list])))
         print('ありがとうございました。')
 
+    print('Bye!')
     yolo.close_session()
