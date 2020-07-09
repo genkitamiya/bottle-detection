@@ -3,13 +3,11 @@ import sys
 import argparse
 import ntpath
 import matplotlib.pyplot as plt
-# import picamera
+import picamera
 from datetime import datetime
 from yolo import YOLO
 from PIL import Image
 from time import sleep
-import os
-from contextlib import redirect_stdout
 
 # warning処理
 import warnings
@@ -19,8 +17,8 @@ photo_filename = '/tmp/data.jpg'
 
 def is_registered(x):
     # 登録済みかチェックするやつ
-    return x == 39
-    #return x in range(5)
+    # return x == 39
+    return x in range(len(class_dic))
 
 def shutter():
     photofile = open(photo_filename, 'wb')
@@ -48,8 +46,8 @@ def scan():
 
         pred, score, r_image = yolo.detect_image(image)
         r_image.save(output_dir + 'result_{}_{}.jpg'.format(file_name.replace('.jpg', ''), time))
-        _ = plt.imshow(r_image)
-        _ = plt.show()
+        plt.imshow(r_image)
+        plt.show()
 
     return pred, score
 
@@ -87,15 +85,19 @@ if __name__ == '__main__':
     yolo = YOLO()
 
     # 商品名・価格を読み込む
-    class_dic = {39: ['ボトル', 100]}
+    class_dic = {0:['GEORGIA ブラックコーヒー', 150]
+                 1:['コカ・コーラ', 120]
+                 2:['午後の紅茶レモンティー', 150]
+                 3:['ポカリスエット', 150]
+                 4:['綾鷹', 130]}
+    # class_dic = {39: ['ボトル', 100]}
     # class_names = class_dic['39'][0]
     # prices = class_dic['39'][1]
 
     # セルフレジシステム起動
     while True:
         # 起動時処理
-        with redirect_stdout(open(os.devnull, 'w')):
-            initialize_model()
+        initialize_model()
 
         tmp = input('Welcome!(press enter)')
         # 'q'が入力されたら終了する
@@ -129,9 +131,9 @@ if __name__ == '__main__':
 
                     pred, score, r_image = yolo.detect_image(image)
                     r_image.save(output_dir + 'result_{}.jpg'.format(file_name.replace('.jpg', '')))
-                    _ = plt.imshow(r_image)
-                    _ = plt.show()
-            
+                    plt.imshow(r_image)
+                    plt.show()
+
             # 未登録商品検出(消すかも)
             if not all([is_registered(x) for x in pred]):
                 key = input('未登録商品を検出しました。再度読み込みますか？ \nはい[y]、いいえ[n]？')
@@ -140,7 +142,7 @@ if __name__ == '__main__':
                 else:
                     print('未登録商品はお会計されません。')
                     pred = [x for x in pred if is_registered(x)] # 未登録商品を削る
-            
+
             # 登録済み商品検出*なし*
             if len(pred) == 0:
                 key = input('商品を検出しませんでした。再度読み込みますか？ \nはい[y]、いいえ[n]？')
@@ -152,7 +154,7 @@ if __name__ == '__main__':
             # 登録済み商品検出*あり*
             else:
                 for i, item in enumerate(pred):
-                    print('商品番号{} {}の金額は{}'.format(i, class_dic[item][0], class_dic[item][1]))
+                    print('商品番号{} {}の金額は¥{}'.format(i, class_dic[item][0], class_dic[item][1]))
 
                 # 商品選択
                 while True:

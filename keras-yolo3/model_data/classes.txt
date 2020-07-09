@@ -1,0 +1,6 @@
+coffee
+cola
+lemon
+pocari
+tea
+other
