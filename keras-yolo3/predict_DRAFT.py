@@ -48,7 +48,7 @@ def scan():
 
         pred, score, r_image = yolo.detect_image(image)
         r_image.save(output_dir + 'result_{}_{}.jpg'.format(file_name.replace('.jpg', ''), time))
-        plt.imshow(r_image)
+        _ = plt.imshow(r_image)
         _ = plt.show()
 
     return pred, score
@@ -129,7 +129,7 @@ if __name__ == '__main__':
 
                     pred, score, r_image = yolo.detect_image(image)
                     r_image.save(output_dir + 'result_{}.jpg'.format(file_name.replace('.jpg', '')))
-                    plt.imshow(r_image)
+                    _ = plt.imshow(r_image)
                     _ = plt.show()
             
             # 未登録商品検出(消すかも)
