@@ -29,14 +29,14 @@ def shutter():
 
     # 音声再生
     #read_sound.play(1)
-    sleep(0.5)
+    #sleep(0.5)
     # 再生の終了
     #read_sound.stop()
     # pi camera 用のライブラリーを使用して、画像を取得
     #with picamera.PiCamera() as camera:
     #    camera.resolution = (300,400)
     #    camera.start_preview()
-        sleep(0.5)
+    #    sleep(0.5)
     #    camera.capture(photo_filename)
 
 def scan():
