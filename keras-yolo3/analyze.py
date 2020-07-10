@@ -70,7 +70,8 @@ def sales_by_product(path, start=None, end=None):
     """
     df, label = get_df(path, start, end)
 
-    plt.hist(df['prodname'])
+    data = df['prodname'].value_counts()
+    plt.bar(data.index, data)
     plt.title('Total products sold'+label)
     plt.xlabel('Product Name')
     plt.ylabel('Quantity')
