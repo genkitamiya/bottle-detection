@@ -27,10 +27,10 @@ def is_registered(x):
 def shutter():
 
     # 音声再生
-    pygame.mixer.music.play(1)
-    sleep(1)
+    read_sound.play(1)
+    sleep(0.5)
     # 再生の終了
-    pygame.mixer.music.stop()
+    read_sound.stop()
     # pi camera 用のライブラリーを使用して、画像を取得
     with picamera.PiCamera() as camera:
         camera.resolution = (300,400)
@@ -120,8 +120,10 @@ if __name__ == '__main__':
     yolo = YOLO()
     
     # 音声ファイル初期化
+    
     pygame.mixer.init()
-    pygame.mixer.music.load("Cash_Register-Beep01-1.mp3")
+    read_sound = pygame.mixer.Sound("Cash_Register-Beep01-1+6.wav")
+    warn_sound = pygame.mixer.Sound("error2.wav")
 
     # 商品名・価格を読み込む
     class_dic = pd.read_csv('products.csv').set_index('id').T.to_dict(orient='list')
@@ -143,7 +145,7 @@ if __name__ == '__main__':
             break
         elif tmp == 'b':
             # 音声再生
-            pygame.mixer.music.play(1)
+            warn_sound.play(1)
             sleep(1)
             # 再生の終了
             pygame.mixer.music.stop()
