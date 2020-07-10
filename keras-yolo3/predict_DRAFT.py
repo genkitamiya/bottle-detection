@@ -78,7 +78,7 @@ def check_book(datestr:str):
     book_path = './books/sales_' + datestr + '.csv'
     # 本日分の帳簿の存在確認
     if os.path.isfile(book_path):
-        tmp_df = pd.read_csv(book_path)
+        tmp_df = pd.read_csv(book_path, index_col=0)
         # 記帳済み確認
         if len(tmp_df.index) > 0:
             # 帳簿最終行のindex
@@ -244,9 +244,10 @@ if __name__ == '__main__':
                                     'customerID': [last_cus_id+1] * len(checkout_list),
                                     'prodname': [class_dic[item][0] for item in checkout_list],
                                     'prodprice': [class_dic[item][1] for item in checkout_list],
-                                })
+                                },columns=['saletime','customerID','prodname','prodprice'])
         
         # ファイル書き込み
+        print(tmp_df)
         tmp_df.to_csv(book_path, mode='a', header=False)
 
         # last_*書き換え
