@@ -38,6 +38,7 @@ def shutter():
     #    camera.start_preview()
     #    sleep(0.5)
     #    camera.capture(photo_filename)
+    pass
 
 def scan():
     shutter()
