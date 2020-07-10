@@ -10,6 +10,7 @@ from yolo import YOLO
 from PIL import Image
 from time import sleep
 import pandas as pd
+from datetime import datetime
 import os
 from contextlib import redirect_stdout
 # warning処理
@@ -67,6 +68,35 @@ def initialize_model():
     """
     image = Image.open('../samples/output.jpg')
     _, _, _ = yolo.detect_image(image)
+
+def check_book(datestr:str):
+    """
+    当日分の帳簿の存在確認など
+    datastrのformat: %Y%m%d
+    ./books 以下にsales_%Y%m%d.csvの形式で書き込み
+    """
+    book_path = './books/sales_' + datestr + '.csv'
+    # 本日分の帳簿の存在確認
+    if os.path.isfile(book_path):
+        tmp_df = pd.read_csv(book_path)
+        # 記帳済み確認
+        if len(tmp_df.index) > 0:
+            # 帳簿最終行のindex
+            last_index = len(tmp_df.index) - 1
+            # 帳簿最終行の顧客ID
+            last_cus_id = int(tmp_df.tail(1)['customerID'].values)
+        else:
+            # ファイルだけ作成されて記帳されていない場合
+            last_index = -1
+            last_cus_id = -1
+    else:
+        # 帳簿CSV新規作成
+        tmp_df = pd.DataFrame(index=[], columns=['saletime', 'customerID', 'prodname', 'prodprice'])
+        tmp_df.to_csv(book_path)
+        last_index = -1
+        last_cus_id = -1
+    
+    return last_index, last_cus_id, book_path
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(argument_default=argparse.SUPPRESS)
@@ -200,6 +230,28 @@ if __name__ == '__main__':
                 break
         print('合計金額は¥{}です。'.format(sum([class_dic[x][1] for x in checkout_list])))
         print('ありがとうございました。')
+        
+        # 記帳
+        sale_date = datetime.now()
+        sale_date_str = sale_date.strftime('%Y%m%d')
+        # 帳簿チェック
+        last_index, last_cus_id, book_path = check_book(sale_date_str)
+
+        # DataFrame作成
+        tmp_df = pd.DataFrame(index=range(last_index+1, last_index+1+len(checkout_list)),
+                                data={
+                                    'saletime': [sale_date.strftime('%Y/%m/%d %H:%M:%S')] * len(checkout_list),
+                                    'costumerID': [last_cus_id+1] * len(checkout_list),
+                                    'prodname': [class_dic[item][0] for item in checkout_list],
+                                    'prodprice': [class_dic[item][1] for item in checkout_list],
+                                })
+        
+        # ファイル書き込み
+        tmp_df.to_csv(book_path, mode='a', header=False)
+
+        # last_*書き換え
+        last_index = last_index+1+len(checkout_list)
+        last_cus_id = last_cus_id+1
 
     print('Bye!')
     yolo.close_session()
