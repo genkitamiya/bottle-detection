@@ -152,11 +152,11 @@ def initiate(path):
                     sales_by_product(path)
                 elif key == '2':
                     date = input('ご覧になりたい期間の起算日を例のように入力してください（例：2020年7月10日→20200710）。')
-                    sales_history(path, start=date)
+                    sales_by_product(path, start=date)
                 elif key == '3':
                     start = input('ご覧になりたい期間の起算日を例のように入力してください（例：2020年7月10日→20200710）。')
                     end = input('次にご覧になりたい期間の終了日を同様に入力してください')
-                    sales_history(path, start, end)
+                    sales_by_product(path, start, end)
 
                 key = input('再度商品毎の売上個数をご覧になりますか？\
                                \nはい[y]、いいえ[n]。')
@@ -170,14 +170,14 @@ def initiate(path):
                 key = input('時間帯毎の売上を表示します。ご覧になりたい期間を選択してください\
                                \n全期間[1]、指定日から本日までの期間[2]、その他期間[3]。')
                 if key == '1':
-                    sales_by_product(path)
+                    sales_by_time(path)
                 elif key == '2':
                     date = input('ご覧になりたい期間の起算日を例のように入力してください（例：2020年7月10日→20200710）。')
-                    sales_history(path, start=date)
+                    sales_by_time(path, start=date)
                 elif key == '3':
                     start = input('ご覧になりたい期間の起算日を例のように入力してください（例：2020年7月10日→20200710）。')
                     end = input('次にご覧になりたい期間の終了日を同様に入力してください')
-                    sales_history(path, start, end)
+                    sales_by_time(path, start, end)
 
                 key = input('再度時間帯毎の売上をご覧になりますか？\
                                \nはい[y]、いいえ[n]。')
