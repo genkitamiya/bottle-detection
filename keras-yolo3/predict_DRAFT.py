@@ -25,22 +25,19 @@ def is_registered(x):
     return x in range(len(class_dic))
 
 def shutter():
-    photofile = open(photo_filename, 'wb')
-    print(photofile)
 
-    # pi camera 用のライブラリーを使用して、画像を取得
-    with picamera.PiCamera() as camera:
-        #camera.resolution = (640,480)
-        camera.resolution = (300,400)
-        camera.start_preview()
-        sleep(1.000)
-        camera.capture(photofile)
-    
     # 音声再生
     pygame.mixer.music.play(1)
     sleep(1)
     # 再生の終了
     pygame.mixer.music.stop()
+    with open(photo_filename, 'wb') as photofile:
+        # pi camera 用のライブラリーを使用して、画像を取得
+        with picamera.PiCamera() as camera:
+            camera.resolution = (300,400)
+            camera.start_preview()
+            sleep(0.5)
+            camera.capture(photofile)
 
 def scan():
     shutter()
@@ -145,6 +142,12 @@ if __name__ == '__main__':
         # 'q'が入力されたら終了する
         if tmp == 'q':
             break
+        elif tmp == 'b':
+            # 音声再生
+            pygame.mixer.music.play(1)
+            sleep(1)
+            # 再生の終了
+            pygame.mixer.music.stop()
 
         # 会計開始
         checkout_list = []
@@ -239,15 +242,15 @@ if __name__ == '__main__':
 
         # DataFrame作成
         tmp_df = pd.DataFrame(index=range(last_index+1, last_index+1+len(checkout_list)),
-                                data={
-                                    'saletime': [sale_date.strftime('%Y/%m/%d %H:%M:%S')] * len(checkout_list),
-                                    'customerID': [last_cus_id+1] * len(checkout_list),
-                                    'prodname': [class_dic[item][0] for item in checkout_list],
-                                    'prodprice': [class_dic[item][1] for item in checkout_list],
-                                },columns=['saletime','customerID','prodname','prodprice'])
+                              data={
+                                  'saletime': [sale_date.strftime('%Y/%m/%d %H:%M:%S')] * len(checkout_list),
+                                  'customerID': [last_cus_id+1] * len(checkout_list),
+                                  'prodname': [class_dic[item][0] for item in checkout_list],
+                                  'prodprice': [class_dic[item][1] for item in checkout_list],
+                              },
+                              columns=['saletime', 'customerID', 'prodname', 'prodprice'])
         
         # ファイル書き込み
-        print(tmp_df)
         tmp_df.to_csv(book_path, mode='a', header=False)
 
         # last_*書き換え
