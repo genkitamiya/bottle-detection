@@ -8,7 +8,9 @@ from datetime import datetime
 from yolo import YOLO
 from PIL import Image
 from time import sleep
-
+import pandas as pd
+import os
+from contextlib import redirect_stdout
 # warning処理
 import warnings
 warnings.filterwarnings('ignore')
@@ -85,19 +87,18 @@ if __name__ == '__main__':
     yolo = YOLO()
 
     # 商品名・価格を読み込む
-    class_dic = {0:['GEORGIA ブラックコーヒー', 150],
-                 1:['コカ・コーラ', 120],
-                 2:['午後の紅茶レモンティー', 150],
-                 3:['ポカリスエット', 150],
-                 4:['綾鷹', 130]}
-    # class_dic = {39: ['ボトル', 100]}
-    # class_names = class_dic['39'][0]
-    # prices = class_dic['39'][1]
+    class_dic = pd.read_csv('products.csv').set_index('id').T.to_dict(orient='list')
+    # {0:['GEORGIA ブラックコーヒー', 150],
+    #  1:['コカ・コーラ', 120],
+    #  2:['午後の紅茶レモンティー', 150],
+    #  3:['ポカリスエット', 150],
+    #  4:['綾鷹', 130]}
 
     # セルフレジシステム起動
     while True:
         # 起動時処理
-        initialize_model()
+        with redirect_stdout(open(os.devnull, 'w')):
+            initialize_model()
 
         tmp = input('Welcome!(press enter)')
         # 'q'が入力されたら終了する
