@@ -5,6 +5,7 @@ import ntpath
 import matplotlib.pyplot as plt
 import picamera
 import pygame.mixer
+import analyze
 from datetime import datetime
 from yolo import YOLO
 from PIL import Image
@@ -91,7 +92,7 @@ def check_book(datestr:str):
         tmp_df.to_csv(book_path)
         last_index = -1
         last_cus_id = -1
-    
+
     return last_index, last_cus_id, book_path
 
 if __name__ == '__main__':
@@ -118,7 +119,7 @@ if __name__ == '__main__':
 
     # モデルを読み込む
     yolo = YOLO()
-    
+
     # 音声ファイル初期化
     pygame.mixer.init()
     pygame.mixer.music.load("Cash_Register-Beep01-1.mp3")
@@ -178,6 +179,15 @@ if __name__ == '__main__':
                     plt.imshow(r_image)
                     plt.show()
 
+            elif FLAGS.sales:
+                """
+                売上分析モード
+                """
+                analyze.initiate('./books/')
+                break
+
+
+
             # 未登録商品検出(消すかも)
             if not all([is_registered(x) for x in pred]):
                 key = input('未登録商品を検出しました。再度読み込みますか？ \nはい[y]、いいえ[n]？')
@@ -232,7 +242,7 @@ if __name__ == '__main__':
                 break
         print('合計金額は¥{}です。'.format(sum([class_dic[x][1] for x in checkout_list])))
         print('ありがとうございました。')
-        
+
         # 記帳
         sale_date = datetime.now()
         sale_date_str = sale_date.strftime('%Y%m%d')
@@ -248,7 +258,7 @@ if __name__ == '__main__':
                                   'prodprice': [class_dic[item][1] for item in checkout_list],
                               },
                               columns=['saletime', 'customerID', 'prodname', 'prodprice'])
-        
+
         # ファイル書き込み
         tmp_df.to_csv(book_path, mode='a', header=False)
 
