@@ -31,13 +31,12 @@ def shutter():
     sleep(1)
     # 再生の終了
     pygame.mixer.music.stop()
-    with open(photo_filename, 'wb') as photofile:
-        # pi camera 用のライブラリーを使用して、画像を取得
-        with picamera.PiCamera() as camera:
-            camera.resolution = (300,400)
-            camera.start_preview()
-            sleep(0.5)
-            camera.capture(photofile)
+    # pi camera 用のライブラリーを使用して、画像を取得
+    with picamera.PiCamera() as camera:
+        camera.resolution = (300,400)
+        camera.start_preview()
+        sleep(0.5)
+        camera.capture(photo_filename)
 
 def scan():
     shutter()
