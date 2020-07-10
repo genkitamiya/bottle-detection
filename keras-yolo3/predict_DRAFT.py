@@ -3,7 +3,7 @@ import sys
 import argparse
 import ntpath
 import matplotlib.pyplot as plt
-import picamera
+# import picamera
 from datetime import datetime
 from yolo import YOLO
 from PIL import Image
@@ -71,13 +71,13 @@ def check_book(datestr:str):
     book_path = './books/sales_' + datestr + '.csv'
     # 本日分の帳簿の存在確認
     if os.path.isfile(book_path):
-        tmp_df = read_csv(book_path)
+        tmp_df = pd.read_csv(book_path)
         # 記帳済み確認
         if len(tmp_df.index) > 0:
             # 帳簿最終行のindex
             last_index = len(tmp_df.index) - 1
             # 帳簿最終行の顧客ID
-            last_cus_id = int(tmp.df.tail(1)['customerID'].values)
+            last_cus_id = int(tmp_df.tail(1)['customerID'].values)
         else:
             # ファイルだけ作成されて記帳されていない場合
             last_index = -1
@@ -85,7 +85,7 @@ def check_book(datestr:str):
     else:
         # 帳簿CSV新規作成
         tmp_df = pd.DataFrame(index=[], columns=['saletime', 'customerID', 'prodname', 'prodprice'])
-        tmp_df.to_csv(datestr)
+        tmp_df.to_csv(book_path)
         last_index = -1
         last_cus_id = -1
     
