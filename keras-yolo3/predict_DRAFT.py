@@ -4,6 +4,7 @@ import argparse
 import ntpath
 import matplotlib.pyplot as plt
 import picamera
+import pygame.mixer
 from datetime import datetime
 from yolo import YOLO
 from PIL import Image
@@ -33,6 +34,12 @@ def shutter():
         camera.start_preview()
         sleep(1.000)
         camera.capture(photofile)
+    
+    # 音声再生
+    pygame.mixer.music.play(1)
+    sleep(1)
+    # 再生の終了
+    pygame.mixer.music.stop()
 
 def scan():
     shutter()
@@ -85,6 +92,10 @@ if __name__ == '__main__':
 
     # モデルを読み込む
     yolo = YOLO()
+    
+    # 音声ファイル初期化
+    pygame.mixer.init()
+    pygame.mixer.music.load("Cash_Register-Beep01-1.mp3")
 
     # 商品名・価格を読み込む
     class_dic = pd.read_csv('products.csv').set_index('id').T.to_dict(orient='list')
