@@ -241,7 +241,7 @@ if __name__ == '__main__':
         tmp_df = pd.DataFrame(index=range(last_index+1, last_index+1+len(checkout_list)),
                                 data={
                                     'saletime': [sale_date.strftime('%Y/%m/%d %H:%M:%S')] * len(checkout_list),
-                                    'costumerID': [last_cus_id+1] * len(checkout_list),
+                                    'customerID': [last_cus_id+1] * len(checkout_list),
                                     'prodname': [class_dic[item][0] for item in checkout_list],
                                     'prodprice': [class_dic[item][1] for item in checkout_list],
                                 })
