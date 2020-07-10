@@ -3,8 +3,8 @@ import sys
 import argparse
 import ntpath
 import matplotlib.pyplot as plt
-import picamera
-import pygame.mixer
+#import picamera
+#import pygame.mixer
 import analyze
 from datetime import datetime
 from yolo import YOLO
@@ -28,16 +28,16 @@ def is_registered(x):
 def shutter():
 
     # 音声再生
-    read_sound.play(1)
+    #read_sound.play(1)
     sleep(0.5)
     # 再生の終了
-    read_sound.stop()
+    #read_sound.stop()
     # pi camera 用のライブラリーを使用して、画像を取得
-    with picamera.PiCamera() as camera:
-        camera.resolution = (300,400)
-        camera.start_preview()
+    #with picamera.PiCamera() as camera:
+    #    camera.resolution = (300,400)
+    #    camera.start_preview()
         sleep(0.5)
-        camera.capture(photo_filename)
+    #    camera.capture(photo_filename)
 
 def scan():
     shutter()
@@ -122,9 +122,9 @@ if __name__ == '__main__':
 
     # 音声ファイル初期化
     
-    pygame.mixer.init()
-    read_sound = pygame.mixer.Sound("Cash_Register-Beep01-1+6.wav")
-    warn_sound = pygame.mixer.Sound("error2.wav")
+    #pygame.mixer.init()
+    #read_sound = pygame.mixer.Sound("Cash_Register-Beep01-1+6.wav")
+    #warn_sound = pygame.mixer.Sound("error2.wav")
 
     # 商品名・価格を読み込む
     class_dic = pd.read_csv('products.csv').set_index('id').T.to_dict(orient='list')
@@ -146,10 +146,10 @@ if __name__ == '__main__':
             break
         elif tmp == 'b':
             # 音声再生
-            warn_sound.play(1)
+            #warn_sound.play(1)
             sleep(1)
             # 再生の終了
-            pygame.mixer.music.stop()
+            #pygame.mixer.music.stop()
 
         # 会計開始
         checkout_list = []
