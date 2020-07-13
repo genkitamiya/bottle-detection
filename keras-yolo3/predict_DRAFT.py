@@ -8,7 +8,8 @@ import matplotlib.pyplot as plt
 import analyze
 from datetime import datetime
 from yolo import YOLO
-from PIL import Image
+from PIL import Image, ImageTk
+import tkinter as tk
 from time import sleep
 import pandas as pd
 from datetime import datetime
@@ -56,12 +57,30 @@ def scan():
         pred, score, r_image = yolo.detect_image(image)
         image_path = output_dir + 'result_{}.jpg'.format(file_name.replace('.jpg', '')) 
         r_image.save(image_path)
-        p = subprocess.Popen(["display", image_path])
-        sleep(1)
-        p.kill()
-
+        show_image(image_path)
 
     return pred, score
+
+def show_image(image_path:str):
+
+    # tkwindow作成
+    root = tkinter.Tk()
+    root.title('pred')
+    root.geometry("400x300")
+    
+    # imageを開く
+    with Image.open(image_path) as img:
+        img = ImageTk.PhotoImage(img)
+        # canvas作成
+        canvas = tkinter.Canvas(bg = "black", width=400, height=300)
+        canvas.place(x=100, y=50)
+        item = canvas.create_image(30, 30, image=img, anchor=tkinter.NW)
+        # 表示
+        root.mainloop()
+        # 5秒間待つ
+        sleep(5)
+        # window閉じる
+        root.destroy()
 
 def initialize_model():
     """
@@ -184,11 +203,7 @@ if __name__ == '__main__':
                     pred, score, r_image = yolo.detect_image(image)
                     image_path = output_dir + 'result_{}.jpg'.format(file_name.replace('.jpg', '')) 
                     r_image.save(image_path)
-                    print(image_path)
-                    #p = subprocess.Popen(["display", image_path])
-                    p = subprocess.Popen(["dir"])
-                    sleep(1)
-                    p.kill()
+                    show_image(image_path)
 
             elif FLAGS.sales:
                 """
