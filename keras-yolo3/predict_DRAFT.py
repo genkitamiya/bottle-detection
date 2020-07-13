@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import picamera
 import pygame.mixer
 import analyze
+import subprocess
 from datetime import datetime
 from yolo import YOLO
 from PIL import Image
@@ -52,12 +53,10 @@ def scan():
         time = datetime.now().strftime('%Y%m%d%H%M%S')
 
         pred, score, r_image = yolo.detect_image(image)
-        image_path = output_dir + 'result_{}.jpg'.format(file_name.replace('.jpg', '')) 
+        image_path = output_dir + 'result_{}.jpg'.format(file_name.replace('.jpg', ''))
         r_image.save(image_path)
-        p = subprocess.Popen(["display", image_path])
         sleep(1)
-        plt.close()
-        p.kill()
+        plt.close('all')
 
     return pred, score
 
@@ -124,7 +123,7 @@ if __name__ == '__main__':
     yolo = YOLO()
 
     # 音声ファイル初期化
-    
+
     pygame.mixer.init()
     read_sound = pygame.mixer.Sound("Cash_Register-Beep01-1+6.wav")
     warn_sound = pygame.mixer.Sound("error2.wav")
@@ -179,12 +178,15 @@ if __name__ == '__main__':
                     output_dir = 'output/'
                     _, file_name = ntpath.split(img)
 
+                    start = timer()
                     pred, score, r_image = yolo.detect_image(image)
-                    image_path = output_dir + 'result_{}.jpg'.format(file_name.replace('.jpg', '')) 
+                    end = timer()
+                    print('検出にかかった時間：{:.3f}秒'.format(end - start))
+                    
+                    image_path = output_dir + 'result_{}.jpg'.format(file_name.replace('.jpg', ''))
                     r_image.save(image_path)
-                    p = subprocess.Popen(["display", image_path])
                     sleep(1)
-                    p.kill()
+                    plt.close('all')
 
             elif FLAGS.sales:
                 """
