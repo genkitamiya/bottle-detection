@@ -37,8 +37,8 @@ def is_registered(x):
 def shutter():
 
     # 音声再生
-    read_sound.play(1)
-    sleep(2)
+    read_sound.play()
+    sleep(1)
     # 再生の終了
     read_sound.stop()
     # pi camera 用のライブラリーを使用して、画像を取得
@@ -163,11 +163,11 @@ if __name__ == '__main__':
     pygame.mixer.init()
     read_sound = pygame.mixer.Sound("Cash_Register-Beep01-1+6.wav")
     warn_sound = pygame.mixer.Sound("error2.wav")
-    guide_voice1 = pygame.mixer.Sound("Please_press_ENTER.wav")
-    guide_voice2 = pygame.mixer.Sound("Please_place_the_products_under_the_camera_and_press_enter.wav")
-    guide_voice3 = pygame.mixer.Sound("Please_enter_the_item_number_you_wish_to_check_out.wav")
-    guide_voice4 = pygame.mixer.Sound("Would_you_like_to_check_for_other_items.wav")
-    guide_voice5 = pygame.mixer.Sound("Thank_you_Have_a_nice_day.wav")
+    guide_voice1 = pygame.mixer.Sound("./guide_sounds/Please_press_ENTER.wav")
+    guide_voice2 = pygame.mixer.Sound("./guide_sounds/Please_place_the_products_under_the_camera_and_press_enter.wav")
+    guide_voice3 = pygame.mixer.Sound("./guide_sounds/Please_enter_the_item_number_you_wish_to_check_out.wav")
+    guide_voice4 = pygame.mixer.Sound("./guide_sounds/Would_you_like_to_check_for_other_items.wav")
+    guide_voice5 = pygame.mixer.Sound("./guide_sounds/Thank_you_Have_a_nice_day.wav")
     
     # 商品名・価格を読み込む
     class_dic = pd.read_csv('products.csv').set_index('id').T.to_dict(orient='list')
@@ -182,7 +182,13 @@ if __name__ == '__main__':
         # 起動時処理
         with redirect_stdout(open(os.devnull, 'w')):
             initialize_model()
-
+        
+        # 音声案内「エンターを押してください」
+        sleep(1)
+        guide_voice1.play()
+        sleep(2)
+        guide_voice1.stop()
+        
         tmp = input('Welcome!(press enter)')
         # 'q'が入力されたら終了する
         if tmp == 'q':
@@ -190,7 +196,7 @@ if __name__ == '__main__':
         # 'b'が入力されたら音声再生
         elif tmp == 'b':
             # 音声再生
-            warn_sound.play(1)
+            warn_sound.play()
             sleep(1)
             # 再生の終了
             pygame.mixer.music.stop()
@@ -211,18 +217,14 @@ if __name__ == '__main__':
                 """
                 カメラ検出
                 """
+                # 音声案内「商品を置いてください」
+                guide_voice2.play()
+                sleep(4)
+                guide_voice2.stop()
+                
                 key = input('商品をスキャンします。「Enter」を押して下さい')
                 pred, score = scan()
                 
-                # 音声案内「エンターを押してください」
-                guide_voice1.play(1)
-                sleep(2)
-                guide_voice1.stop()
-                
-                # 音声案内「商品を置いてください」
-                guide_voice2.play(1)
-                sleep(2)
-                guide_voice2.stop()
                 
             elif FLAGS.file:
                 """
@@ -271,12 +273,13 @@ if __name__ == '__main__':
 
                 # 商品選択
                 while True:
-                    key = input('お会計を行いたい商品番号を入力してください。(例：0 3 5): ')
                     
                     # 音声案内「会計する商品を選んでください」
-                    guide_voice3.play(1)
-                    sleep(2)
+                    guide_voice3.play()
+                    sleep(3)
                     guide_voice3.stop()
+                    
+                    key = input('お会計を行いたい商品番号を入力してください。(例：0 3 5): ')
                     
                     prod_ids = set(map(int, key.split()))
                     # prod_idがpredに対してOutOfIndexでないかチェック
@@ -299,13 +302,13 @@ if __name__ == '__main__':
             else:
                 print('買い物カゴは空です。')
 
+            # 音声案内「他の商品も会計しますか」
+            guide_voice4.play()
+            sleep(2.5)
+            guide_voice4.stop()
+
             # 会計終了プロセス
             key = input('他の商品もお会計しますか？ \nはい[y]、いいえ[n]？')
-            
-            # 音声案内「他の商品も会計しますか」
-            guide_voice4.play(1)
-            sleep(2)
-            guide_voice4.stop()
             
             if key=='y':
                 continue
@@ -314,7 +317,7 @@ if __name__ == '__main__':
         print('合計金額は¥{}です。'.format(sum([class_dic[x][1] for x in checkout_list])))
         print('ありがとうございました。')
         # 音声案内「ありがとうございました」
-        guide_voice5.play(1)
+        guide_voice5.play()
         sleep(2)
         guide_voice5.stop()
 
