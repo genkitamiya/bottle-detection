@@ -9,7 +9,8 @@ import analyze
 import subprocess
 from datetime import datetime
 from yolo import YOLO
-from PIL import Image
+from PIL import Image, ImageTk
+import tkinter as tk
 from time import sleep
 from timeit import default_timer as timer
 import pandas as pd
@@ -60,12 +61,27 @@ def scan():
 
         image_path = output_dir + 'result_{}.jpg'.format(time)
         r_image.save(image_path)
-        plt.imshow(r_image)
-        plt.show()
-        sleep(1)
-        plt.close('all')
+        show_image(image_path)
 
     return pred, score
+
+def show_image(image_path:str):
+
+    # tkwindow作成
+    root = tk.Tk()
+    root.title('pred')
+    root.geometry('300x400')
+    
+    # imageを開く
+    with Image.open(image_path) as img:
+        img = ImageTk.PhotoImage(img)
+        # canvas作成
+        canvas = tk.Canvas(bg = "black", width=300, height=400)
+        canvas.place(x=0, y=0)
+        item = canvas.create_image(0, 0, image=img, anchor=tk.NW)
+        root.after(1000, root.destroy)
+        # 表示
+        root.mainloop()
 
 def initialize_model():
     """
@@ -200,10 +216,7 @@ if __name__ == '__main__':
 
                     image_path = output_dir + 'result_{}.jpg'.format(file_name.replace('.jpg', ''))
                     r_image.save(image_path)
-                    sleep(100)
-                    plt.close('all')
-
-
+                    show_image(image_path)
 
             # 未登録商品検出(消すかも)
             if not all([is_registered(x) for x in pred]):
