@@ -2,6 +2,7 @@ import os
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import japanize_matplotlib
 from datetime import datetime, timedelta
 
 def get_df(path, start=None, end=None):
@@ -70,7 +71,8 @@ def sales_by_product(path, start=None, end=None):
     """
     df, label = get_df(path, start, end)
 
-    plt.hist(df['prodname'])
+    data = df['prodname'].value_counts()
+    plt.bar(data.index,data)
     plt.title('Total products sold'+label)
     plt.xlabel('Product Name')
     plt.ylabel('Quantity')
@@ -97,8 +99,9 @@ def sales_by_time(path, start=None, end=None):
     plt.show()
 
 def initiate(path):
+    key = input('売上の分析を開始します。「Enter」を押してください')
+
     while True:
-        key = input('売上の分析を開始します。「Enter」を押してください')
         key = input('ご覧になりたい項目を選択してください。\
                     \n一日の売上[1]、売上の推移[2]、商品毎の売上[3]、時間帯毎の売上[4]、操作終了[q] ')
 
@@ -115,6 +118,9 @@ def initiate(path):
                 elif key == '2':
                     date = input('ご覧になりたい日にちを例のように入力してください（例：2020年7月10日→20200710）。')
                     sales_day(path, date)
+                else:
+                    print('入力エラー。再度キーを押してください。')
+                    continue
 
                 key = input('再度一日の売上をご覧になりますか？\
                                \nはい[y]、いいえ[n]。')
@@ -136,6 +142,9 @@ def initiate(path):
                     start = input('ご覧になりたい期間の起算日を例のように入力してください（例：2020年7月10日→20200710）。')
                     end = input('次にご覧になりたい期間の終了日を同様に入力してください')
                     sales_history(path, start, end)
+                else:
+                    print('入力エラー。再度キーを押してください。')
+                    continue
 
                 key = input('再度売上の推移をご覧になりますか？\
                                \nはい[y]、いいえ[n]。')
@@ -157,6 +166,9 @@ def initiate(path):
                     start = input('ご覧になりたい期間の起算日を例のように入力してください（例：2020年7月10日→20200710）。')
                     end = input('次にご覧になりたい期間の終了日を同様に入力してください')
                     sales_history(path, start, end)
+                else:
+                    print('入力エラー。再度キーを押してください。')
+                    continue
 
                 key = input('再度商品毎の売上個数をご覧になりますか？\
                                \nはい[y]、いいえ[n]。')
@@ -178,6 +190,9 @@ def initiate(path):
                     start = input('ご覧になりたい期間の起算日を例のように入力してください（例：2020年7月10日→20200710）。')
                     end = input('次にご覧になりたい期間の終了日を同様に入力してください')
                     sales_history(path, start, end)
+                else:
+                    print('入力エラー。再度キーを押してください。')
+                    continue
 
                 key = input('再度時間帯毎の売上をご覧になりますか？\
                                \nはい[y]、いいえ[n]。')
@@ -185,3 +200,6 @@ def initiate(path):
                     continue
                 else:
                     break
+
+        else:
+            print('入力エラー。再度キーを押してください。')
