@@ -9,6 +9,7 @@ import analyze
 import subprocess
 from datetime import datetime
 from yolo import YOLO
+from PIL import Image, ImageOps
 from PIL import Image, ImageTk
 import tkinter as tk
 from time import sleep
