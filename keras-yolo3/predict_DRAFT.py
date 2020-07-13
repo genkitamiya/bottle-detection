@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[ ]:
+
+
 import numpy as np
 import sys
 import argparse
@@ -157,7 +163,12 @@ if __name__ == '__main__':
     pygame.mixer.init()
     read_sound = pygame.mixer.Sound("Cash_Register-Beep01-1+6.wav")
     warn_sound = pygame.mixer.Sound("error2.wav")
-
+    guide_voice1 = pygame.mixer.Sound("Please_press_ENTER.wav")
+    guide_voice2 = pygame.mixer.Sound("Please_place_the_products_under_the_camera_and_press_enter.wav")
+    guide_voice3 = pygame.mixer.Sound("Please_enter_the_item_number_you_wish_to_check_out.wav")
+    guide_voice4 = pygame.mixer.Sound("Would_you_like_to_check_for_other_items.wav")
+    guide_voice5 = pygame.mixer.Sound("Thank_you_Have_a_nice_day.wav")
+    
     # 商品名・価格を読み込む
     class_dic = pd.read_csv('products.csv').set_index('id').T.to_dict(orient='list')
     # {0:['GEORGIA ブラックコーヒー', 150],
@@ -202,7 +213,17 @@ if __name__ == '__main__':
                 """
                 key = input('商品をスキャンします。「Enter」を押して下さい')
                 pred, score = scan()
-
+                
+                # 音声案内「エンターを押してください」
+                guide_voice1.play(1)
+                sleep(2)
+                guide_voice1.stop()
+                
+                # 音声案内「商品を置いてください」
+                guide_voice2.play(1)
+                sleep(2)
+                guide_voice2.stop()
+                
             elif FLAGS.file:
                 """
                 データファイル検出
@@ -251,6 +272,12 @@ if __name__ == '__main__':
                 # 商品選択
                 while True:
                     key = input('お会計を行いたい商品番号を入力してください。(例：0 3 5): ')
+                    
+                    # 音声案内「会計する商品を選んでください」
+                    guide_voice3.play(1)
+                    sleep(2)
+                    guide_voice3.stop()
+                    
                     prod_ids = set(map(int, key.split()))
                     # prod_idがpredに対してOutOfIndexでないかチェック
                     if not all([prod_id in range(len(pred)) for prod_id in prod_ids]):
@@ -274,12 +301,22 @@ if __name__ == '__main__':
 
             # 会計終了プロセス
             key = input('他の商品もお会計しますか？ \nはい[y]、いいえ[n]？')
+            
+            # 音声案内「他の商品も会計しますか」
+            guide_voice4.play(1)
+            sleep(2)
+            guide_voice4.stop()
+            
             if key=='y':
                 continue
             else:
                 break
         print('合計金額は¥{}です。'.format(sum([class_dic[x][1] for x in checkout_list])))
         print('ありがとうございました。')
+        # 音声案内「ありがとうございました」
+        guide_voice5.play(1)
+        sleep(2)
+        guide_voice5.stop()
 
         # 記帳
         sale_date = datetime.now()
@@ -306,3 +343,4 @@ if __name__ == '__main__':
 
     print('Bye!')
     yolo.close_session()
+
