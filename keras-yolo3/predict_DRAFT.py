@@ -53,9 +53,8 @@ def scan():
         time = datetime.now().strftime('%Y%m%d%H%M%S')
 
         pred, score, r_image = yolo.detect_image(image)
-        image_path = output_dir + 'result_{}.jpg'.format(file_name.replace('.jpg', '')) 
+        image_path = output_dir + 'result_{}.jpg'.format(file_name.replace('.jpg', ''))
         r_image.save(image_path)
-        p = subprocess.Popen(["display", image_path])
         sleep(1)
         plt.close()
         p.kill()
@@ -154,6 +153,7 @@ if __name__ == '__main__':
             sleep(1)
             # 再生の終了
             pygame.mixer.music.stop()
+            continue
 
         # 会計開始
         checkout_list = []
