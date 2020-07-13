@@ -68,16 +68,20 @@ def scan():
 
 def show_image(image_path:str):
 
+    width = 300*2
+    height = 400*2
+
     # tkwindow作成
     root = tk.Tk()
-    root.title('pred')
-    root.geometry('600x800')
+    root.title('prediction')
+    root.geometry(str(width) + 'x' + str(height))
     
     # imageを開く
     with Image.open(image_path) as img:
-        img = ImageTk.PhotoImage(img).zoom(2,2)
+        img = img.resize((width, height), Image.ANTIALIAS)
+        img = ImageTk.PhotoImage(img)
         # canvas作成
-        canvas = tk.Canvas(bg = "black", width=600, height=800)
+        canvas = tk.Canvas(bg = "black", width=width, height=height)
         canvas.place(x=0, y=0)
         item = canvas.create_image(0, 0, image=img, anchor=tk.NW)
         root.after(10000, root.destroy)
