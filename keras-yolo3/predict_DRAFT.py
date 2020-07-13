@@ -69,8 +69,9 @@ def scan():
 
 def show_image(image_path:str):
 
-    width = 300*2
-    height = 400*2
+    scale = 2
+    width = 300 * scale
+    height = 400 * scale
 
     # tkwindow作成
     root = tk.Tk()
