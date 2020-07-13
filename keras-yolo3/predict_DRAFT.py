@@ -142,22 +142,38 @@ def play_sound():
     #pygame.mixer.music.stop()
 
 def main():
+
     # 会計開始
     checkout_list = []
     while True:
+        children = frame.winfo_children()
+        for child in children:
+            child.destroy()
+        #camera_button = 
+        #file_button =
 
         if FLAGS.camera:
             """
             カメラ検出
             """
-            key = input('商品をスキャンします。「Enter」を押して下さい')
+            #key = input('商品をスキャンします。「Enter」を押して下さい')
+            label1 = tk.Label(frame, text="商品をスキャンします。「Enter」を押して下さい")
+            label1.pack()
+
+            root.update()
+            
             pred, score = scan()
 
         elif FLAGS.file:
             """
             データファイル検出
             """
-            img = input('ファイルパスを入力してください: ')
+            #img = input('ファイルパスを入力してください: ')
+            label1 = tk.Label(frame, text="ファイルパスを入力してください")
+            label1.pack()
+
+            root.update()
+            
             try:
                 image = Image.open(img)
             except:
@@ -310,32 +326,46 @@ if __name__ == '__main__':
     root.title(u"Self Register")
     root.geometry("1000x800")
 
+    #style
+    style = ttk.Style()
+    style.configure('.', font = ('', 20))
+
     # make canvas
-    canvas = tk.Canvas(root, bg="red")
-    canvas.pack()
+    frame = ttk.Frame(root,
+                      width=500,
+                      height=300,
+                      borderwidth=20,
+                      relief='groove')
+    frame.pack()
+    frame.pack_propagate(0)
 
     # welcome message
-    font  = ("Helevetice", 32, "bold")
-    tk.Label(canvas, text="Welcome!!", font=font).pack()
+    font = ("Helevetice", 64, "bold")
+    title_label = tk.Label(frame, text="Welcome!!", font=font)
+    title_label.pack()
 
     # 各種ボタン
-    s_button = ttk.Button(canvas,
+    s_button = ttk.Button(frame,
                           text="Start",
+                          width=80,
                           command=main)
     s_button.pack()
         
-    b_button = ttk.Button(canvas,
+    b_button = ttk.Button(frame,
                           text="Buzzer",
+                          width=80,
                           command=play_sound)
     b_button.pack()
 
-    a_button = ttk.Button(canvas,
+    a_button = ttk.Button(frame,
                           text="Analyze",
+                          width=80,
                           command=lambda: analyze.initiate('./books/'))
     a_button.pack()
 
-    e_button = ttk.Button(canvas,
+    e_button = ttk.Button(frame,
                           text="Exit",
+                          width=80,
                           command=exit_program)
     e_button.pack()
 
