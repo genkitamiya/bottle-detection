@@ -14,6 +14,7 @@ import pandas as pd
 from datetime import datetime
 import os
 from contextlib import redirect_stdout
+import subprocess
 # warning処理
 import warnings
 warnings.filterwarnings('ignore')
@@ -53,9 +54,12 @@ def scan():
         time = datetime.now().strftime('%Y%m%d%H%M%S')
 
         pred, score, r_image = yolo.detect_image(image)
-        r_image.save(output_dir + 'result_{}_{}.jpg'.format(file_name.replace('.jpg', ''), time))
-        plt.imshow(r_image)
-        plt.show()
+        image_path = output_dir + 'result_{}.jpg'.format(file_name.replace('.jpg', '')) 
+        r_image.save(image_path)
+        p = subprocess.Popen(["display", image_path])
+        sleep(1)
+        p.kill()
+
 
     return pred, score
 
@@ -174,13 +178,17 @@ if __name__ == '__main__':
                     print('読込みエラー、再度入力お願いします。')
                     continue
                 else:
-                    output_dir = 'output/'
+                    output_dir = './output/'
                     _, file_name = ntpath.split(img)
 
                     pred, score, r_image = yolo.detect_image(image)
-                    r_image.save(output_dir + 'result_{}.jpg'.format(file_name.replace('.jpg', '')))
-                    plt.imshow(r_image)
-                    plt.show()
+                    image_path = output_dir + 'result_{}.jpg'.format(file_name.replace('.jpg', '')) 
+                    r_image.save(image_path)
+                    print(image_path)
+                    #p = subprocess.Popen(["display", image_path])
+                    p = subprocess.Popen(["dir"])
+                    sleep(1)
+                    p.kill()
 
             elif FLAGS.sales:
                 """
