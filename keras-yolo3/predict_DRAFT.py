@@ -6,11 +6,13 @@ import matplotlib.pyplot as plt
 #import picamera
 #import pygame.mixer
 import analyze
+import subprocess
 from datetime import datetime
 from yolo import YOLO
-from PIL import Image, ImageTk
+from PIL import Image, ImageOps, ImageTk
 import tkinter as tk
 from time import sleep
+from timeit import default_timer as timer
 import pandas as pd
 from datetime import datetime
 import os
@@ -32,9 +34,11 @@ def shutter():
     # 音声再生
     #read_sound.play(1)
     #sleep(0.5)
+
     # 再生の終了
     #read_sound.stop()
     # pi camera 用のライブラリーを使用して、画像を取得
+
     #with picamera.PiCamera() as camera:
     #    camera.resolution = (300,400)
     #    camera.start_preview()
@@ -46,6 +50,8 @@ def scan():
     shutter()
     try:
         image = Image.open(photo_filename)
+        image = ImageOps.flip(image)
+        image = ImageOps.mirror(image)
     except:
         print('読込みエラー、再度入力お願いします。')
     else:
@@ -54,8 +60,12 @@ def scan():
 
         time = datetime.now().strftime('%Y%m%d%H%M%S')
 
+        start = timer()
         pred, score, r_image = yolo.detect_image(image)
-        image_path = output_dir + 'result_{}.jpg'.format(file_name.replace('.jpg', '')) 
+        end = timer()
+        print('検出にかかった時間：{:.3f}秒'.format(end - start))
+
+        image_path = output_dir + 'result_{}.jpg'.format(time)
         r_image.save(image_path)
         show_image(image_path)
 
@@ -63,19 +73,25 @@ def scan():
 
 def show_image(image_path:str):
 
+    scale = 2
+    width = 300 * scale
+    height = 400 * scale
+
     # tkwindow作成
     root = tk.Tk()
-    root.title('pred')
-    root.geometry('300x400')
+    root.title('prediction')
+    root.geometry(str(width) + 'x' + str(height))
     
     # imageを開く
     with Image.open(image_path) as img:
+        img = img.resize((width, height), Image.ANTIALIAS)
         img = ImageTk.PhotoImage(img)
         # canvas作成
-        canvas = tk.Canvas(bg = "black", width=300, height=400)
+        canvas = tk.Canvas(bg = "black", width=width, height=height)
         canvas.place(x=0, y=0)
         item = canvas.create_image(0, 0, image=img, anchor=tk.NW)
-        root.after(1000, root.destroy)
+        root.after(5000, root.destroy)
+
         # 表示
         root.mainloop()
 
@@ -131,10 +147,10 @@ if __name__ == '__main__':
         help='ファイル検出モード'
     )
 
-    parser.add_argument(
-        '-s', '--sales', default=False, action="store_true",
-        help='売上帳簿出力'
-    )
+    # parser.add_argument(
+    #     '-s', '--sales', default=False, action="store_true",
+    #     help='売上帳簿出力'
+    # )
 
     FLAGS = parser.parse_args()
 
@@ -165,12 +181,21 @@ if __name__ == '__main__':
         # 'q'が入力されたら終了する
         if tmp == 'q':
             break
+        # 'b'が入力されたら音声再生
         elif tmp == 'b':
             # 音声再生
             #warn_sound.play(1)
             sleep(1)
             # 再生の終了
             #pygame.mixer.music.stop()
+            continue
+        # 's'が入力されたら売上分析を開始
+        elif tmp == 's':
+            """
+            売上分析モード
+            """
+            analyze.initiate('./books/')
+            continue
 
         # 会計開始
         checkout_list = []
@@ -197,19 +222,14 @@ if __name__ == '__main__':
                     output_dir = './output/'
                     _, file_name = ntpath.split(img)
 
+                    start = timer()
                     pred, score, r_image = yolo.detect_image(image)
-                    image_path = output_dir + 'result_{}.jpg'.format(file_name.replace('.jpg', '')) 
+                    end = timer()
+                    print('検出にかかった時間：{:.3f}秒'.format(end - start))
+
+                    image_path = output_dir + 'result_{}.jpg'.format(file_name.replace('.jpg', ''))
                     r_image.save(image_path)
                     show_image(image_path)
-
-            elif FLAGS.sales:
-                """
-                売上分析モード
-                """
-                analyze.initiate('./books/')
-                break
-
-
 
             # 未登録商品検出(消すかも)
             if not all([is_registered(x) for x in pred]):
