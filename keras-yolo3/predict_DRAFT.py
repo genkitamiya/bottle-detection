@@ -11,6 +11,7 @@ from datetime import datetime
 from yolo import YOLO
 from PIL import Image
 from time import sleep
+from timeit import default_timer as timer
 import pandas as pd
 from datetime import datetime
 import os
@@ -57,8 +58,10 @@ def scan():
         end = timer()
         print('検出にかかった時間：{:.3f}秒'.format(end - start))
 
-        image_path = output_dir + 'result_{}.jpg'.format(file_name.replace('.jpg', ''))
+        image_path = output_dir + 'result_{}.jpg'.format(time)
         r_image.save(image_path)
+        plt.imshow(r_image)
+        plt.show()
         sleep(1)
         plt.close('all')
 
@@ -197,7 +200,7 @@ if __name__ == '__main__':
 
                     image_path = output_dir + 'result_{}.jpg'.format(file_name.replace('.jpg', ''))
                     r_image.save(image_path)
-                    sleep(1)
+                    sleep(100)
                     plt.close('all')
 
 
