@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import picamera
 import pygame.mixer
 import analyze
+import subprocess
 from datetime import datetime
 from yolo import YOLO
 from PIL import Image
@@ -56,6 +57,7 @@ def scan():
         r_image.save(image_path)
         p = subprocess.Popen(["display", image_path])
         sleep(1)
+        plt.close()
         p.kill()
 
     return pred, score
