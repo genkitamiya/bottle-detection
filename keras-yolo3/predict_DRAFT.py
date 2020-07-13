@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import picamera
 import pygame.mixer
 import analyze
+import subprocess
 from datetime import datetime
 from yolo import YOLO
 from PIL import Image
