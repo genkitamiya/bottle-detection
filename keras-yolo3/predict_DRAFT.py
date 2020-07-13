@@ -9,7 +9,7 @@ import analyze
 import subprocess
 from datetime import datetime
 from yolo import YOLO
-from PIL import Image
+from PIL import Image, ImageOps
 from time import sleep
 from timeit import default_timer as timer
 import pandas as pd
