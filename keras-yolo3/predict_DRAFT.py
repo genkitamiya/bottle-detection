@@ -70,16 +70,16 @@ def show_image(image_path:str):
     # tkwindow作成
     root = tk.Tk()
     root.title('pred')
-    root.geometry('300x400')
+    root.geometry('600x800')
     
     # imageを開く
     with Image.open(image_path) as img:
-        img = ImageTk.PhotoImage(img)
+        img = ImageTk.PhotoImage(img).zoom(2,2)
         # canvas作成
-        canvas = tk.Canvas(bg = "black", width=300, height=400)
+        canvas = tk.Canvas(bg = "black", width=600, height=800)
         canvas.place(x=0, y=0)
         item = canvas.create_image(0, 0, image=img, anchor=tk.NW)
-        root.after(1000, root.destroy)
+        root.after(10000, root.destroy)
         # 表示
         root.mainloop()
 
