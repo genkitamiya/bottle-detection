@@ -9,8 +9,7 @@ import analyze
 import subprocess
 from datetime import datetime
 from yolo import YOLO
-from PIL import Image, ImageOps
-from PIL import Image, ImageTk
+from PIL import Image, ImageOps, ImageTk
 import tkinter as tk
 from time import sleep
 from timeit import default_timer as timer
@@ -47,6 +46,8 @@ def scan():
     shutter()
     try:
         image = Image.open(photo_filename)
+        image = ImageOps.flip(image)
+        image = ImageOps.mirror(image)
     except:
         print('読込みエラー、再度入力お願いします。')
     else:
@@ -84,7 +85,7 @@ def show_image(image_path:str):
         canvas = tk.Canvas(bg = "black", width=width, height=height)
         canvas.place(x=0, y=0)
         item = canvas.create_image(0, 0, image=img, anchor=tk.NW)
-        root.after(10000, root.destroy)
+        root.after(5000, root.destroy)
         # 表示
         root.mainloop()
 
