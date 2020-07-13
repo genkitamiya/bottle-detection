@@ -4,11 +4,17 @@ import argparse
 import ntpath
 import matplotlib.pyplot as plt
 import picamera
+import pygame.mixer
+import analyze
+import subprocess
 from datetime import datetime
 from yolo import YOLO
 from PIL import Image
 from time import sleep
-
+import pandas as pd
+from datetime import datetime
+import os
+from contextlib import redirect_stdout
 # warning処理
 import warnings
 warnings.filterwarnings('ignore')
@@ -21,16 +27,18 @@ def is_registered(x):
     return x in range(len(class_dic))
 
 def shutter():
-    photofile = open(photo_filename, 'wb')
-    print(photofile)
 
+    # 音声再生
+    read_sound.play(1)
+    sleep(0.5)
+    # 再生の終了
+    read_sound.stop()
     # pi camera 用のライブラリーを使用して、画像を取得
     with picamera.PiCamera() as camera:
-        #camera.resolution = (640,480)
         camera.resolution = (300,400)
         camera.start_preview()
-        sleep(1.000)
-        camera.capture(photofile)
+        sleep(0.5)
+        camera.capture(photo_filename)
 
 def scan():
     shutter()
@@ -45,9 +53,12 @@ def scan():
         time = datetime.now().strftime('%Y%m%d%H%M%S')
 
         pred, score, r_image = yolo.detect_image(image)
-        r_image.save(output_dir + 'result_{}_{}.jpg'.format(file_name.replace('.jpg', ''), time))
-        plt.imshow(r_image)
-        plt.show()
+        image_path = output_dir + 'result_{}.jpg'.format(file_name.replace('.jpg', '')) 
+        r_image.save(image_path)
+        p = subprocess.Popen(["display", image_path])
+        sleep(1)
+        plt.close()
+        p.kill()
 
     return pred, score
 
@@ -58,6 +69,35 @@ def initialize_model():
     """
     image = Image.open('../samples/output.jpg')
     _, _, _ = yolo.detect_image(image)
+
+def check_book(datestr:str):
+    """
+    当日分の帳簿の存在確認など
+    datastrのformat: %Y%m%d
+    ./books 以下にsales_%Y%m%d.csvの形式で書き込み
+    """
+    book_path = './books/sales_' + datestr + '.csv'
+    # 本日分の帳簿の存在確認
+    if os.path.isfile(book_path):
+        tmp_df = pd.read_csv(book_path, index_col=0)
+        # 記帳済み確認
+        if len(tmp_df.index) > 0:
+            # 帳簿最終行のindex
+            last_index = len(tmp_df.index) - 1
+            # 帳簿最終行の顧客ID
+            last_cus_id = int(tmp_df.tail(1)['customerID'].values)
+        else:
+            # ファイルだけ作成されて記帳されていない場合
+            last_index = -1
+            last_cus_id = -1
+    else:
+        # 帳簿CSV新規作成
+        tmp_df = pd.DataFrame(index=[], columns=['saletime', 'customerID', 'prodname', 'prodprice'])
+        tmp_df.to_csv(book_path)
+        last_index = -1
+        last_cus_id = -1
+
+    return last_index, last_cus_id, book_path
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(argument_default=argparse.SUPPRESS)
@@ -84,25 +124,36 @@ if __name__ == '__main__':
     # モデルを読み込む
     yolo = YOLO()
 
+    # 音声ファイル初期化
+    
+    pygame.mixer.init()
+    read_sound = pygame.mixer.Sound("Cash_Register-Beep01-1+6.wav")
+    warn_sound = pygame.mixer.Sound("error2.wav")
+
     # 商品名・価格を読み込む
-    class_dic = {0:['GEORGIA ブラックコーヒー', 150],
-                 1:['コカ・コーラ', 120],
-                 2:['午後の紅茶レモンティー', 150],
-                 3:['ポカリスエット', 150],
-                 4:['綾鷹', 130]}
-    # class_dic = {39: ['ボトル', 100]}
-    # class_names = class_dic['39'][0]
-    # prices = class_dic['39'][1]
+    class_dic = pd.read_csv('products.csv').set_index('id').T.to_dict(orient='list')
+    # {0:['GEORGIA ブラックコーヒー', 150],
+    #  1:['コカ・コーラ', 120],
+    #  2:['午後の紅茶レモンティー', 150],
+    #  3:['ポカリスエット', 150],
+    #  4:['綾鷹', 130]}
 
     # セルフレジシステム起動
     while True:
         # 起動時処理
-        initialize_model()
+        with redirect_stdout(open(os.devnull, 'w')):
+            initialize_model()
 
         tmp = input('Welcome!(press enter)')
         # 'q'が入力されたら終了する
         if tmp == 'q':
             break
+        elif tmp == 'b':
+            # 音声再生
+            warn_sound.play(1)
+            sleep(1)
+            # 再生の終了
+            pygame.mixer.music.stop()
 
         # 会計開始
         checkout_list = []
@@ -130,9 +181,20 @@ if __name__ == '__main__':
                     _, file_name = ntpath.split(img)
 
                     pred, score, r_image = yolo.detect_image(image)
-                    r_image.save(output_dir + 'result_{}.jpg'.format(file_name.replace('.jpg', '')))
-                    plt.imshow(r_image)
-                    plt.show()
+                    image_path = output_dir + 'result_{}.jpg'.format(file_name.replace('.jpg', '')) 
+                    r_image.save(image_path)
+                    p = subprocess.Popen(["display", image_path])
+                    sleep(1)
+                    p.kill()
+
+            elif FLAGS.sales:
+                """
+                売上分析モード
+                """
+                analyze.initiate('./books/')
+                break
+
+
 
             # 未登録商品検出(消すかも)
             if not all([is_registered(x) for x in pred]):
@@ -188,6 +250,29 @@ if __name__ == '__main__':
                 break
         print('合計金額は¥{}です。'.format(sum([class_dic[x][1] for x in checkout_list])))
         print('ありがとうございました。')
+
+        # 記帳
+        sale_date = datetime.now()
+        sale_date_str = sale_date.strftime('%Y%m%d')
+        # 帳簿チェック
+        last_index, last_cus_id, book_path = check_book(sale_date_str)
+
+        # DataFrame作成
+        tmp_df = pd.DataFrame(index=range(last_index+1, last_index+1+len(checkout_list)),
+                              data={
+                                  'saletime': [sale_date.strftime('%Y/%m/%d %H:%M:%S')] * len(checkout_list),
+                                  'customerID': [last_cus_id+1] * len(checkout_list),
+                                  'prodname': [class_dic[item][0] for item in checkout_list],
+                                  'prodprice': [class_dic[item][1] for item in checkout_list],
+                              },
+                              columns=['saletime', 'customerID', 'prodname', 'prodprice'])
+
+        # ファイル書き込み
+        tmp_df.to_csv(book_path, mode='a', header=False)
+
+        # last_*書き換え
+        last_index = last_index+1+len(checkout_list)
+        last_cus_id = last_cus_id+1
 
     print('Bye!')
     yolo.close_session()

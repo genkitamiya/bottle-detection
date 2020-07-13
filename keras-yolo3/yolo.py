@@ -189,8 +189,10 @@ def detect_video(yolo, video_path, output_path=""):
     while True:
         return_value, frame = vid.read()
         image = Image.fromarray(frame)
-        image = yolo.detect_image(image)
-        result = np.asarray(image)
+        _, _, image = yolo.detect_image(image)
+        #image = yolo.detect_image(image)
+        result = cv2.cvtColor(np.array(image, dtype=np.uint8), cv2.COLOR_RGB2BGR)
+        #result = np.asarray(image)
         curr_time = timer()
         exec_time = curr_time - prev_time
         prev_time = curr_time
