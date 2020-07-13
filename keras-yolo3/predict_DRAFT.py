@@ -55,6 +55,8 @@ def scan():
         r_image.save(output_dir + 'result_{}_{}.jpg'.format(file_name.replace('.jpg', ''), time))
         plt.imshow(r_image)
         plt.show()
+        sleep(1)
+        ply.close()
 
     return pred, score
 
@@ -180,6 +182,8 @@ if __name__ == '__main__':
                     r_image.save(output_dir + 'result_{}.jpg'.format(file_name.replace('.jpg', '')))
                     plt.imshow(r_image)
                     plt.show()
+                    sleep(1)
+                    plt.close()
 
             elif FLAGS.sales:
                 """
