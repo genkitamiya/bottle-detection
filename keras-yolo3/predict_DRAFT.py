@@ -52,7 +52,11 @@ def scan():
 
         time = datetime.now().strftime('%Y%m%d%H%M%S')
 
+        start = timer()
         pred, score, r_image = yolo.detect_image(image)
+        end = timer()
+        print('検出にかかった時間：{:.3f}秒'.format(end - start))
+
         image_path = output_dir + 'result_{}.jpg'.format(file_name.replace('.jpg', ''))
         r_image.save(image_path)
         sleep(1)
@@ -182,7 +186,7 @@ if __name__ == '__main__':
                     pred, score, r_image = yolo.detect_image(image)
                     end = timer()
                     print('検出にかかった時間：{:.3f}秒'.format(end - start))
-                    
+
                     image_path = output_dir + 'result_{}.jpg'.format(file_name.replace('.jpg', ''))
                     r_image.save(image_path)
                     sleep(1)
