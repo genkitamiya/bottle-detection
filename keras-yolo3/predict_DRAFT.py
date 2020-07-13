@@ -56,7 +56,7 @@ def scan():
         plt.imshow(r_image)
         plt.show()
         sleep(1)
-        ply.close()
+        plt.close()
 
     return pred, score
 
