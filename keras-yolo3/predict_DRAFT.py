@@ -64,23 +64,20 @@ def scan():
 def show_image(image_path:str):
 
     # tkwindow作成
-    root = tkinter.Tk()
+    root = tk.Tk()
     root.title('pred')
-    root.geometry("400x300")
+    root.geometry('300x400')
     
     # imageを開く
     with Image.open(image_path) as img:
         img = ImageTk.PhotoImage(img)
         # canvas作成
-        canvas = tkinter.Canvas(bg = "black", width=400, height=300)
-        canvas.place(x=100, y=50)
-        item = canvas.create_image(30, 30, image=img, anchor=tkinter.NW)
+        canvas = tk.Canvas(bg = "black", width=300, height=400)
+        canvas.place(x=0, y=0)
+        item = canvas.create_image(0, 0, image=img, anchor=tk.NW)
+        root.after(1000, root.destroy)
         # 表示
         root.mainloop()
-        # 5秒間待つ
-        sleep(5)
-        # window閉じる
-        root.destroy()
 
 def initialize_model():
     """
