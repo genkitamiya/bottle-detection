@@ -9,8 +9,7 @@ import analyze
 import subprocess
 from datetime import datetime
 from yolo import YOLO
-from PIL import Image, ImageOps
-from PIL import Image, ImageTk
+from PIL import Image, ImageOps, ImageTk
 import tkinter as tk
 from time import sleep
 from timeit import default_timer as timer
@@ -68,8 +67,9 @@ def scan():
 
 def show_image(image_path:str):
 
-    width = 300*2
-    height = 400*2
+    scale = 2
+    width = 300 * scale
+    height = 400 * scale
 
     # tkwindow作成
     root = tk.Tk()
