@@ -116,10 +116,10 @@ if __name__ == '__main__':
         help='ファイル検出モード'
     )
 
-    parser.add_argument(
-        '-s', '--sales', default=False, action="store_true",
-        help='売上帳簿出力'
-    )
+    # parser.add_argument(
+    #     '-s', '--sales', default=False, action="store_true",
+    #     help='売上帳簿出力'
+    # )
 
     FLAGS = parser.parse_args()
 
@@ -150,12 +150,20 @@ if __name__ == '__main__':
         # 'q'が入力されたら終了する
         if tmp == 'q':
             break
+        # 'b'が入力されたら音声再生
         elif tmp == 'b':
             # 音声再生
             warn_sound.play(1)
             sleep(1)
             # 再生の終了
             pygame.mixer.music.stop()
+        # 's'が入力されたら売上分析を開始
+        elif tmp == 's':
+            """
+            売上分析モード
+            """
+            analyze.initiate('./books/')
+            continue
 
         # 会計開始
         checkout_list = []
@@ -191,13 +199,6 @@ if __name__ == '__main__':
                     r_image.save(image_path)
                     sleep(1)
                     plt.close('all')
-
-            elif FLAGS.sales:
-                """
-                売上分析モード
-                """
-                analyze.initiate('./books/')
-                break
 
 
 
