@@ -170,12 +170,13 @@ if __name__ == '__main__':
     #  2:['午後の紅茶レモンティー', 150],
     #  3:['ポカリスエット', 150],
     #  4:['綾鷹', 130]}
+    
+    # 起動時処理
+    with redirect_stdout(open(os.devnull, 'w')):
+        initialize_model()
 
     # セルフレジシステム起動
     while True:
-        # 起動時処理
-        with redirect_stdout(open(os.devnull, 'w')):
-            initialize_model()
         
         # terminalのクリア
         os.system('clear')
@@ -286,6 +287,7 @@ if __name__ == '__main__':
                         prod_ids = set(map(int, key.split()))
                         # pred内のindexから商品IDに変換する
                         items = [pred[x] for x in prod_ids]
+                        break
                     except:
                         # value check
                         print('商品番号の誤りを検知しました。0-{}の間の番号を入力してください'.format(len(pred)-1))
