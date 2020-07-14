@@ -34,16 +34,12 @@ def get_df(path, start=None, end=None):
     elif end is None:
         # 指定日 - 当日
         label = ' between {} - {}'.format(start, datetime.today().strftime('%Y/%m/%d'))
-        start = datetime.strptime(str(start), '%Y/%m/%d')
-        end = datetime.today() + timedelta(1)
         tmp_df = tmp_df.loc[start:]
         return tmp_df, label
     else:
         # 指定日 - 指定日
         label = ' between {} - {}'.format(start, end)
-        date_start = datetime.strptime(str(start), '%Y/%m/%d')
-        date_end = datetime.strptime(str(end), '%Y/%m/%d') + timedelta(1)
-        tmp_df = tmp_df.loc[date_start:date_end]
+        tmp_df = tmp_df.loc[start:end]
         return tmp_df, label
 
 
@@ -64,8 +60,10 @@ def sales_history(path, start=None, end=None):
     *スラッシュあり*
     """
     df, label = get_df(path, start, end)
+    
     # 日毎に正規化
     df.index = df.index.normalize()
+
     #　日毎にgroupby
     df_plt = df.groupby(df.index).sum()
 
