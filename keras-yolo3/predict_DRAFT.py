@@ -180,7 +180,14 @@ if __name__ == '__main__':
         # terminalのクリア
         os.system('clear')
         
-        print('Welcome!', end='')
+        print('\
+# # # # # # # # # # # # # # # # # # # # # # # # # # #\n\
+    /MME         JMMMMMMF  /MMMME  /MME      /MM. /ME\n\
+   /M/ME           /MF    /#/     /M/ME     /M/M /VME\n\
+  /M/ ME  MMMMM   /MF    /MMME   /M/ ME    /M/ M/V ME\n\
+ /MM##ME         /MF    /#/     /MM##ME   /M/  MV  ME\n\
+/M/   ME        /ME    /MMMME  /M/   ME  /M/       ME\n\
+# # # # # # # # # # # # # # # # # # # # # # # # # # #\n')
 
         # 音声案内「エンターを押してください」
         sleep(1)
@@ -188,7 +195,7 @@ if __name__ == '__main__':
         sleep(2)
         guide_voice1.stop()
         
-        tmp = input('(press enter)')
+        tmp = input('Welcome!(press enter)')
         # 'q'が入力されたら終了する
         if tmp == 'q':
             break
@@ -216,14 +223,12 @@ if __name__ == '__main__':
                 """
                 カメラ検出
                 """
-                print('商品をスキャンします。', end='')
-
                 # 音声案内「商品を置いてください」
                 guide_voice2.play()
                 sleep(4)
                 guide_voice2.stop()
                 
-                key = input('「Enter」を押して下さい')
+                key = input('商品をスキャンします。「Enter」を押して下さい')
                 pred, score = scan()
                 
                 
