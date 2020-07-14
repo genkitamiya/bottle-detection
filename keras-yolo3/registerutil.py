@@ -31,6 +31,8 @@ def date_format_checker(slash=True):
     todayobj = datetime.now()
 
     dateformat_str = '%Y/%m/%d'
+    
+    example_str = 'dummy'
     # スラッシュ入れない教の場合
     if not slash:
         dateformat_str = dateformat_str.replace('/', '')
@@ -50,4 +52,5 @@ def date_format_checker(slash=True):
                 print('本日以前の日付を入力してください。', end='')
                 continue
         # チェック抜けたらreturn
+        print(dateobj)
         return dateobj
