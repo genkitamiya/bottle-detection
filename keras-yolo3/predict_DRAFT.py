@@ -68,18 +68,21 @@ def scan():
     return pred, score
 
 def show_image(image_path:str):
-
-    scale = 2
-    width = 300 * scale
-    height = 400 * scale
-
-    # tkwindow作成
-    root = tk.Tk()
-    root.title('prediction')
-    root.geometry(str(width) + 'x' + str(height))
     
+    # 画像の拡大倍率
+    scale = 2
+
     # imageを開く
-    with Image.open(image_path) as img:
+    with Image.open(image_path) as img
+        # 画像サイズ取得
+        width = img.width * scale
+        height = img.height * scale
+
+        # tkwindow作成
+        root = tk.Tk()
+        root.title('prediction')
+        root.geometry(str(width) + 'x' + str(height))
+
         img = img.resize((width, height), Image.ANTIALIAS)
         img = ImageTk.PhotoImage(img)
         # canvas作成
@@ -87,6 +90,7 @@ def show_image(image_path:str):
         canvas.place(x=0, y=0)
         item = canvas.create_image(0, 0, image=img, anchor=tk.NW)
         root.after(5000, root.destroy)
+
         # 表示
         root.mainloop()
 
