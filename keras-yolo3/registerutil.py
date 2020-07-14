@@ -1,3 +1,5 @@
+from datetime import datetime
+
 # utilities for self register system 
 
 def y_n_input() -> bool:
@@ -15,3 +17,36 @@ def y_n_input() -> bool:
             return False
         else:
             print('y/Y もしくは n/N で入力してください。')
+
+def date_format_checker(slash=True):
+    """
+    正しい日付formatで入力するまで入力させ続ける
+    if slash == True:
+        example 2020/7/14
+    elif slash == False:
+        example 20200714
+
+    *入力形式は揃えたいしスラッシュありでしか使わなさそう*
+    """
+    todayobj = datetime.now()
+    example_str = f'[例：{todayobj.year}{todayobj.month}月{todayobj.day}日 → {todayobj.strftime("%Y/%m/%d")}]: '
+    dateformat_str = '%Y/%m/%d'
+    # スラッシュ入れない教の場合
+    if not slash:
+        example_str = example_str.replace('/', '')
+        dateformat_str = dateformat_str.replace('/', '')
+
+    while True:
+        datestr = input(example_str)
+        # format check
+        try:
+            dateobj = datetime.strptime(datestr, dateformat_str)
+        except:
+            print('正しいフォーマットで入力してください。', end='')
+            continue
+        else:
+            if todayobj < dateobj:
+                print('本日以前の日付を入力してください。', end='')
+                continue
+        # チェック抜けたらreturn
+        return dateobj
