@@ -4,6 +4,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import japanize_matplotlib
 from datetime import datetime, timedelta
+from registerutil import y_n_input
 
 def get_df(path, start=None, end=None):
     """
@@ -121,8 +122,9 @@ def initiate(path):
                     print('入力エラー。再度キーを押してください。')
                     continue
 
-                key = input('再度一日の売上をご覧になりますか？\nはい[y]、いいえ[n]。')
-                if key == 'y':
+                print('再度一日の売上をご覧になりますか？')
+                key = y_n_input()
+                if key:
                     continue
                 else:
                     break
@@ -143,8 +145,9 @@ def initiate(path):
                     print('入力エラー。再度キーを押してください。')
                     continue
 
-                key = input('再度売上の推移をご覧になりますか？\nはい[y]、いいえ[n]。')
-                if key == 'y':
+                print('再度売上の推移をご覧になりますか？')
+                key = y_n_input()
+                if key:
                     continue
                 else:
                     break
@@ -165,8 +168,9 @@ def initiate(path):
                     print('入力エラー。再度キーを押してください。')
                     continue
 
-                key = input('再度商品毎の売上個数をご覧になりますか？\nはい[y]、いいえ[n]。')
-                if key == 'y':
+                print('再度商品毎の売上個数をご覧になりますか？')
+                key = y_n_input()
+                if key:
                     continue
                 else:
                     break
@@ -187,8 +191,9 @@ def initiate(path):
                     print('入力エラー。再度キーを押してください。')
                     continue
 
-                key = input('再度時間帯毎の売上をご覧になりますか？\nはい[y]、いいえ[n]。')
-                if key == 'y':
+                print('再度時間帯毎の売上をご覧になりますか？')
+                key = y_n_input()
+                if key:
                     continue
                 else:
                     break

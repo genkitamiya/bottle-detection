@@ -5,7 +5,6 @@ import ntpath
 import matplotlib.pyplot as plt
 import picamera
 import pygame.mixer
-import analyze
 import subprocess
 from datetime import datetime
 from yolo import YOLO
@@ -20,16 +19,25 @@ from contextlib import redirect_stdout
 # warning処理
 import warnings
 warnings.filterwarnings('ignore')
+# 自作系
+from registerutil import y_n_input
+import analyze
 
+# 撮影した写真データの保存場所
 photo_filename = '/tmp/data.jpg'
 
-def is_registered(x):
-    # 登録済みかチェックするやつ
+def is_registered(x:int, class_dictionary:dict) -> bool:
+    """
+    登録済みかチェックするやつ
+    """
     # return x == 39
-    return x in range(len(class_dic))
+    return x in range(len(class_dictionary) - 1)
 
 def shutter():
-
+    """
+    音出して写真をとる。
+    ピッと鳴る。
+    """
     # 音声再生
     read_sound.play()
     sleep(1)
@@ -43,7 +51,12 @@ def shutter():
         camera.capture(photo_filename)
 
 def scan():
+    """
+    shutterで写真を取って商品を検出する。
+    予測クラス(商品ID)とscoreを返す
+    """
     shutter()
+
     try:
         image = Image.open(photo_filename)
         image = ImageOps.flip(image)
@@ -52,7 +65,6 @@ def scan():
         print('読込みエラー、再度入力お願いします。')
     else:
         output_dir = 'output/'
-        _, file_name = ntpath.split(photo_filename)
 
         time = datetime.now().strftime('%Y%m%d%H%M%S')
 
@@ -67,10 +79,14 @@ def scan():
 
     return pred, score
 
-def show_image(image_path:str):
-    
-    # 画像の拡大倍率
-    scale = 2
+def show_image(image_path:str, window_title='prediction', duration=5000, scale=2):
+    """
+    一定時間画像を表示
+    推定結果を表示する際に使用
+    window_title : 画像表示窓のタイトル
+    duration : 表示時間(ms)
+    scale : 画像の拡大倍率
+    """
 
     # imageを開く
     with Image.open(image_path) as img
@@ -80,7 +96,7 @@ def show_image(image_path:str):
 
         # tkwindow作成
         root = tk.Tk()
-        root.title('prediction')
+        root.title(window_title)
         root.geometry(str(width) + 'x' + str(height))
 
         img = img.resize((width, height), Image.ANTIALIAS)
@@ -89,7 +105,7 @@ def show_image(image_path:str):
         canvas = tk.Canvas(bg = "black", width=width, height=height)
         canvas.place(x=0, y=0)
         item = canvas.create_image(0, 0, image=img, anchor=tk.NW)
-        root.after(5000, root.destroy)
+        root.after(duration, root.destroy)
 
         # 表示
         root.mainloop()
@@ -105,8 +121,17 @@ def initialize_model():
 def check_book(datestr:str):
     """
     当日分の帳簿の存在確認など
-    datastrのformat: %Y%m%d
+    datastrのformat: %Y%m%d (当日日付)
     ./books 以下にsales_%Y%m%d.csvの形式で書き込み
+    
+    *return*
+    last_index:int
+      帳簿の売上商品IDの最後の数
+    last_cus_id:
+      帳簿のお客様IDの最後の数
+    book_path:str
+      帳簿の相対パス
+      書き込み時に使用
     """
     book_path = './books/sales_' + datestr + '.csv'
     # 本日分の帳簿の存在確認
@@ -168,13 +193,14 @@ if __name__ == '__main__':
     guide_voice5 = pygame.mixer.Sound("./guide_sounds/Thank_you_Have_a_nice_day.wav")
     
     # 商品名・価格を読み込む
-    class_dic = pd.read_csv('products.csv').set_index('id').T.to_dict(orient='list')
+    cls_dic = pd.read_csv('products.csv').set_index('id').T.to_dict(orient='list')
     # {0:['GEORGIA ブラックコーヒー', 150],
     #  1:['コカ・コーラ', 120],
     #  2:['午後の紅茶レモンティー', 150],
     #  3:['ポカリスエット', 150],
     #  4:['綾鷹', 130]}
-    
+    # → 一番最後のカテゴリが「未登録」になるかも？」
+
     # 起動時処理
     with redirect_stdout(open(os.devnull, 'w')):
         initialize_model()
@@ -186,13 +212,13 @@ if __name__ == '__main__':
         os.system('clear')
         
         print('\
-# # # # # # # # # # # # # # # # # # # # # # # # # # #\n\
-    /MME         JMMMMMMF  /MMMME  /MME      /MM. /ME\n\
-   /M/ME           /MF    /#/     /M/ME     /M/M /VME\n\
-  /M/ ME  MMMMM   /MF    /MMME   /M/ ME    /M/ M/V ME\n\
- /MM##ME         /MF    /#/     /MM##ME   /M/  MV  ME\n\
-/M/   ME        /ME    /MMMME  /M/   ME  /M/       ME\n\
-# # # # # # # # # # # # # # # # # # # # # # # # # # #\n')
+# # # # # # # # # # # # # # # # # # # # # # # # # # # #\n\
+    /MME          JMMMMMMMF  /MMMME  /MME      /MM. /ME\n\
+   /M/ME            /MF     /#/     /M/ME     /M/M /VME\n\
+  /M/ ME  MMMMMM   /MF     /MMME   /M/ ME    /M/ M/V ME\n\
+ /MM##ME          /MF     /#/     /MM##ME   /M/  MV  ME\n\
+/M/   ME         /ME     /MMMME  /M/   ME  /M/       ME\n\
+# # # # # # # # # # # # # # # # # # # # # # # # # # # #\n')
 
         # 音声案内「エンターを押してください」
         sleep(1)
@@ -200,7 +226,7 @@ if __name__ == '__main__':
         sleep(2)
         guide_voice1.stop()
         
-        tmp = input('Welcome!(press enter)')
+        tmp = input('Welcome! (press enter)')
         # 'q'が入力されたら終了する
         if tmp == 'q':
             break
@@ -236,7 +262,6 @@ if __name__ == '__main__':
                 key = input('商品をスキャンします。「Enter」を押して下さい')
                 pred, score = scan()
                 
-                
             elif FLAGS.file:
                 """
                 データファイル検出
@@ -261,18 +286,20 @@ if __name__ == '__main__':
                     show_image(image_path)
 
             # 未登録商品検出(消すかも)
-            if not all([is_registered(x) for x in pred]):
-                key = input('未登録商品を検出しました。再度読み込みますか？ \nはい[y]、いいえ[n]？')
-                if key == 'y':
+            if not all([is_registered(x, cls_dic) for x in pred]):
+                print('未登録商品を検出しました。再度読み込みますか？')
+                key = y_n_input()
+                if key:
                     continue
                 else:
                     print('未登録商品はお会計されません。')
-                    pred = [x for x in pred if is_registered(x)] # 未登録商品を削る
+                    pred = [x for x in pred if is_registered(x, cls_dic)] # 未登録商品を削る
 
             # 登録済み商品検出*なし*
             if len(pred) == 0:
-                key = input('商品を検出しませんでした。再度読み込みますか？ \nはい[y]、いいえ[n]？')
-                if key == 'y':
+                print('商品を検出しませんでした。再度読み込みますか？')
+                key = y_n_input()
+                if key:
                     continue
                 else:
                     pass
@@ -280,7 +307,7 @@ if __name__ == '__main__':
             # 登録済み商品検出*あり*
             else:
                 for i, item in enumerate(pred):
-                    print('商品番号{} {}の金額は¥{}'.format(i, class_dic[item][0], class_dic[item][1]))
+                    print('商品番号{} {}の金額は¥{}'.format(i, cls_dic[item][0], cls_dic[item][1]))
 
                 # 商品選択
                 while True:
@@ -309,7 +336,7 @@ if __name__ == '__main__':
             if len(checkout_list) > 0:
                 print('買い物カゴに次の商品が入っています。')
                 for item in checkout_list:
-                    print('{} ¥{}'.format(class_dic[item][0], class_dic[item][1]))
+                    print('{} ¥{}'.format(cls_dic[item][0], cls_dic[item][1]))
             else:
                 print('買い物カゴは空です。')
 
@@ -319,13 +346,14 @@ if __name__ == '__main__':
             guide_voice4.stop()
 
             # 会計終了プロセス
-            key = input('他の商品もお会計しますか？ \nはい[y]、いいえ[n]？')
-            
-            if key=='y':
+            print('他の商品もお会計しますか？')
+            key = y_n_input()
+            if key:
                 continue
             else:
                 break
-        print('合計金額は¥{}です。'.format(sum([class_dic[x][1] for x in checkout_list])))
+
+        print('合計金額は¥{}です。'.format(sum([cls_dic[x][1] for x in checkout_list])))
         print('ありがとうございました。')
         # 音声案内「ありがとうございました」
         guide_voice5.play()
@@ -343,8 +371,8 @@ if __name__ == '__main__':
                               data={
                                   'saletime': [sale_date.strftime('%Y/%m/%d %H:%M:%S')] * len(checkout_list),
                                   'customerID': [last_cus_id+1] * len(checkout_list),
-                                  'prodname': [class_dic[item][0] for item in checkout_list],
-                                  'prodprice': [class_dic[item][1] for item in checkout_list],
+                                  'prodname': [cls_dic[item][0] for item in checkout_list],
+                                  'prodprice': [cls_dic[item][1] for item in checkout_list],
                               },
                               columns=['saletime', 'customerID', 'prodname', 'prodprice'])
 
