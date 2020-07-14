@@ -29,12 +29,13 @@ def date_format_checker(slash=True):
     *入力形式は揃えたいしスラッシュありでしか使わなさそう*
     """
     todayobj = datetime.now()
-    example_str = f'[例：{todayobj.year}{todayobj.month}月{todayobj.day}日 → {todayobj.strftime("%Y/%m/%d")}]: '
+
     dateformat_str = '%Y/%m/%d'
     # スラッシュ入れない教の場合
     if not slash:
-        example_str = example_str.replace('/', '')
         dateformat_str = dateformat_str.replace('/', '')
+
+    example_str = '[例：{}年{}月{}日 → {}]: '.format(todayobj.year, todayobj.month, todayobj.day, todayobj.strftime(date))
 
     while True:
         datestr = input(example_str)
