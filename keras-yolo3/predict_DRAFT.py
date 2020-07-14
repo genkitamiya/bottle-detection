@@ -141,6 +141,27 @@ def play_sound():
     # 再生の終了
     #pygame.mixer.music.stop()
 
+def get_input_path(inputbox):
+    img = inputbox.get()
+    print(img)
+
+    try:
+        image = Image.open(img)
+    except:
+        print('読込みエラー、再度入力お願いします。')
+    else:
+        output_dir = './output/'
+        _, file_name = ntpath.split(img)
+
+        start = timer()
+        pred, score, r_image = yolo.detect_image(image)
+        end = timer()
+        print('検出にかかった時間：{:.3f}秒'.format(end - start))
+
+        image_path = output_dir + 'result_{}.jpg'.format(file_name.replace('.jpg', ''))
+        r_image.save(image_path)
+        show_image(image_path)
+
 def main():
 
     # 会計開始
@@ -160,7 +181,7 @@ def main():
             label1 = tk.Label(frame, text="商品をスキャンします。「Enter」を押して下さい")
             label1.pack()
 
-            root.update()
+            root.mainloop()
             
             pred, score = scan()
 
@@ -169,28 +190,21 @@ def main():
             データファイル検出
             """
             #img = input('ファイルパスを入力してください: ')
-            label1 = tk.Label(frame, text="ファイルパスを入力してください")
+            font = ("Helevetice", 32, "bold")
+            label1 = tk.Label(frame, text="input File path", font=font)
             label1.pack()
 
-            root.update()
-            
-            try:
-                image = Image.open(img)
-            except:
-                print('読込みエラー、再度入力お願いします。')
-                continue
-            else:
-                output_dir = './output/'
-                _, file_name = ntpath.split(img)
+            txtbox = tk.Entry(frame,
+                              width=50)
+            txtbox.pack()
 
-                start = timer()
-                pred, score, r_image = yolo.detect_image(image)
-                end = timer()
-                print('検出にかかった時間：{:.3f}秒'.format(end - start))
+            input_button = ttk.Button(frame,
+                                      text="submit",
+                                      command=lambda: get_input_path(txtbox))
+            input_button.pack()
 
-                image_path = output_dir + 'result_{}.jpg'.format(file_name.replace('.jpg', ''))
-                r_image.save(image_path)
-                show_image(image_path)
+            # 入力待ち
+            root.mainloop()
 
         # 未登録商品検出(消すかも)
         if not all([is_registered(x) for x in pred]):
@@ -275,8 +289,56 @@ def exit_program():
     yolo.close_session()
     exit()
 
+# Window作る
+root = tk.Tk()
+root.title(u"Self Register")
+root.geometry("1000x800")
+
+#style
+style = ttk.Style()
+style.configure('.', font = ('', 20))
+
+# make canvas
+frame = ttk.Frame(root,
+                    width=500,
+                    height=300,
+                    borderwidth=20,
+                    relief='groove')
+frame.pack()
+frame.pack_propagate(0)
+
+# welcome message
+font = ("Helevetice", 64, "bold")
+title_label = tk.Label(frame, text="Welcome!!", font=font)
+title_label.pack()
+
+# 各種ボタン
+s_button = ttk.Button(frame,
+                        text="Start",
+                        width=80,
+                        command=main)
+s_button.pack()
+    
+b_button = ttk.Button(frame,
+                        text="Buzzer",
+                        width=80,
+                        command=play_sound)
+b_button.pack()
+
+a_button = ttk.Button(frame,
+                        text="Analyze",
+                        width=80,
+                        command=lambda: analyze.initiate('./books/'))
+a_button.pack()
+
+e_button = ttk.Button(frame,
+                        text="Exit",
+                        width=80,
+                        command=exit_program)
+e_button.pack()
+
 if __name__ == '__main__':
-    global root, yolo
+    global yolo
 
     parser = argparse.ArgumentParser(argument_default=argparse.SUPPRESS)
     """
@@ -320,54 +382,6 @@ if __name__ == '__main__':
     # 起動時処理
     with redirect_stdout(open(os.devnull, 'w')):
         initialize_model()
-
-    # Window作る
-    root = tk.Tk()
-    root.title(u"Self Register")
-    root.geometry("1000x800")
-
-    #style
-    style = ttk.Style()
-    style.configure('.', font = ('', 20))
-
-    # make canvas
-    frame = ttk.Frame(root,
-                      width=500,
-                      height=300,
-                      borderwidth=20,
-                      relief='groove')
-    frame.pack()
-    frame.pack_propagate(0)
-
-    # welcome message
-    font = ("Helevetice", 64, "bold")
-    title_label = tk.Label(frame, text="Welcome!!", font=font)
-    title_label.pack()
-
-    # 各種ボタン
-    s_button = ttk.Button(frame,
-                          text="Start",
-                          width=80,
-                          command=main)
-    s_button.pack()
-        
-    b_button = ttk.Button(frame,
-                          text="Buzzer",
-                          width=80,
-                          command=play_sound)
-    b_button.pack()
-
-    a_button = ttk.Button(frame,
-                          text="Analyze",
-                          width=80,
-                          command=lambda: analyze.initiate('./books/'))
-    a_button.pack()
-
-    e_button = ttk.Button(frame,
-                          text="Exit",
-                          width=80,
-                          command=exit_program)
-    e_button.pack()
 
     # 開始
     root.mainloop()
