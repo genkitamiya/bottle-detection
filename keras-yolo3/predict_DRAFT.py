@@ -199,7 +199,7 @@ if __name__ == '__main__':
     #  2:['午後の紅茶レモンティー', 150],
     #  3:['ポカリスエット', 150],
     #  4:['綾鷹', 130]}
-    # → 一番最後のカテゴリが「未登録」になるかも？」
+    # → 一番最後のカテゴリが「未登録」になるかも？
 
     # 起動時処理
     with redirect_stdout(open(os.devnull, 'w')):
@@ -213,7 +213,7 @@ if __name__ == '__main__':
         
         print('\
 # # # # # # # # # # # # # # # # # # # # # # # # # # # #\n\
-    /MME          JMMMMMMMF  /MMMME  /MME      /MM. /ME\n\
+    /MME          JMMMMMMMF  /MMMME  /MME      /MM  /ME\n\
    /M/ME            /MF     /#/     /M/ME     /M/M /VME\n\
   /M/ ME  MMMMMM   /MF     /MMME   /M/ ME    /M/ M/V ME\n\
  /MM##ME          /MF     /#/     /MM##ME   /M/  MV  ME\n\

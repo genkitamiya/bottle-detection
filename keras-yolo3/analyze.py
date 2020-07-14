@@ -38,12 +38,12 @@ def get_df(path, start=None, end=None):
         return tmp_df, label
 
 
-def sales_day(path, datestr=datetime.today().strftime('%Y/%m/%d')):
+def sales_day(path, datestr=datetime.today().strftime('%Y%m%d')):
     """
     1日の売上金額を表示
     """
-    file = 'sales_{}.csv'.format(datestr)
-    df = pd.read_csv(path+file)
+    file_name = 'sales_{}.csv'.format(datestr)
+    df = pd.read_csv(path+file_name)
     total = df['prodprice'].sum()
     print('{}年{}月{}日の売上金額は¥{}です。'.format(datestr[:4], datestr[4:6], datestr[6:], total))
 
@@ -116,7 +116,7 @@ def initiate(path):
                 if key == '1':
                     sales_day(path)
                 elif key == '2':
-                    date = input('ご覧になりたい日にちを例のように入力してください（例：2020年7月10日→2020/07/10）。')
+                    date = input('ご覧になりたい日にちを例のように入力してください（例：2020年7月10日→2020/07/10）。').replace('/', '')
                     sales_day(path, date)
                 else:
                     print('入力エラー。再度キーを押してください。')
@@ -135,11 +135,11 @@ def initiate(path):
                 if key == '1':
                     sales_history(path)
                 elif key == '2':
-                    date = input('ご覧になりたい期間の起算日を例のように入力してください（例：2020年7月10日→2020/07/10）。')
+                    date = input('ご覧になりたい期間の起算日を例のように入力してください（例：2020年7月10日→2020/07/10）。').replace('/', '')
                     sales_history(path, start=date)
                 elif key == '3':
-                    start = input('ご覧になりたい期間の起算日を例のように入力してください（例：2020年7月10日→2020/07/10）。')
-                    end = input('次にご覧になりたい期間の終了日を同様に入力してください')
+                    start = input('ご覧になりたい期間の起算日を例のように入力してください（例：2020年7月10日→2020/07/10）。').replace('/', '')
+                    end = input('次にご覧になりたい期間の終了日を同様に入力してください').replace('/', '')
                     sales_history(path, start, end)
                 else:
                     print('入力エラー。再度キーを押してください。')
@@ -158,11 +158,11 @@ def initiate(path):
                 if key == '1':
                     sales_by_product(path)
                 elif key == '2':
-                    date = input('ご覧になりたい期間の起算日を例のように入力してください（例：2020年7月10日→2020/07/10）。')
+                    date = input('ご覧になりたい期間の起算日を例のように入力してください（例：2020年7月10日→2020/07/10）。').replace('/', '')
                     sales_by_product(path, start=date)
                 elif key == '3':
-                    start = input('ご覧になりたい期間の起算日を例のように入力してください（例：2020年7月10日→2020/07/10）。')
-                    end = input('次にご覧になりたい期間の終了日を同様に入力してください')
+                    start = input('ご覧になりたい期間の起算日を例のように入力してください（例：2020年7月10日→2020/07/10）。').replace('/', '')
+                    end = input('次にご覧になりたい期間の終了日を同様に入力してください').replace('/', '')
                     sales_by_product(path, start, end)
                 else:
                     print('入力エラー。再度キーを押してください。')
@@ -181,11 +181,11 @@ def initiate(path):
                 if key == '1':
                     sales_by_time(path)
                 elif key == '2':
-                    date = input('ご覧になりたい期間の起算日を例のように入力してください（例：2020年7月10日→2020/07/10）。')
+                    date = input('ご覧になりたい期間の起算日を例のように入力してください（例：2020年7月10日→2020/07/10）。').replace('/', '')
                     sales_by_time(path, start=date)
                 elif key == '3':
-                    start = input('ご覧になりたい期間の起算日を例のように入力してください（例：2020年7月10日→2020/07/10）。')
-                    end = input('次にご覧になりたい期間の終了日を同様に入力してください')
+                    start = input('ご覧になりたい期間の起算日を例のように入力してください（例：2020年7月10日→2020/07/10）。').replace('/', '')
+                    end = input('次にご覧になりたい期間の終了日を同様に入力してください').replace('/', '')
                     sales_by_time(path, start, end)
                 else:
                     print('入力エラー。再度キーを押してください。')
