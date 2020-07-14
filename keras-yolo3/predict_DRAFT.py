@@ -25,8 +25,9 @@ def is_registered(x:int, class_dictionary:dict) -> bool:
     """
     登録済みかチェックするやつ
     """
-    # return x == 39
-    return x in range(len(class_dictionary) - 1)
+    #return x == 39
+    #return x in range(len(class_dictionary) - 1)
+    return x in range(len(class_dictionary))
 
 def shutter():
     """
