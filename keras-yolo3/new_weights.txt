@@ -1,1 +1,3 @@
 https://www.dropbox.com/s/n2d8opjzazmtx6u/trained_weights_final.h5?dl=0
+
+https://www.dropbox.com/s/qt4bj0vpotc7w97/trained_weights_final.h5?dl=0　　（荒木のです0714）
