@@ -29,8 +29,8 @@ def date_format_checker(slash=True):
     *入力形式は揃えたいしスラッシュありでしか使わなさそう*
     """
     todayobj = datetime.now()
-    example_str = f'[例：{todayobj.year}{todayobj.month}月{todayobj.day}日 → {todayobj.strftime("%Y/%m/%d")}]: '
     dateformat_str = '%Y/%m/%d'
+    example_str = 'dummy'
     # スラッシュ入れない教の場合
     if not slash:
         example_str = example_str.replace('/', '')
@@ -49,4 +49,5 @@ def date_format_checker(slash=True):
                 print('本日以前の日付を入力してください。', end='')
                 continue
         # チェック抜けたらreturn
+        print(dateobj)
         return dateobj

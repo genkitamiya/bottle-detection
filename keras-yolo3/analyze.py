@@ -22,6 +22,7 @@ def get_df(path, start=None, end=None):
     end: int
       終了日（年月日）
     """
+    
     df = pd.concat((pd.read_csv(path+f, index_col=0) for f in os.listdir(path)))
     df['saletime'] = [datetime.strptime(str(x), '%Y/%m/%d %H:%M:%S') for x in df['saletime']]
     tmp_df = df.set_index(['saletime'])
@@ -33,16 +34,16 @@ def get_df(path, start=None, end=None):
     elif end is None:
         # 指定日 - 当日
         label = ' between {} - {}'.format(start, datetime.today().strftime('%Y/%m/%d'))
-        start = datetime.strptime(start, '%Y/%m/%d')
+        start = datetime.strptime(str(start), '%Y/%m/%d')
         end = datetime.today() + timedelta(1)
-        tmp_df = tmp_df.loc[start:end]
+        tmp_df = tmp_df.loc[start:]
         return tmp_df, label
     else:
         # 指定日 - 指定日
         label = ' between {} - {}'.format(start, end)
         date_start = datetime.strptime(str(start), '%Y/%m/%d')
         date_end = datetime.strptime(str(end), '%Y/%m/%d') + timedelta(1)
-        tmp_df = tmp_df.loc[start:end]
+        tmp_df = tmp_df.loc[date_start:date_end]
         return tmp_df, label
 
 
