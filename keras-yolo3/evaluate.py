@@ -6,7 +6,7 @@ import ntpath
 from yolo import YOLO
 from PIL import Image
 from contextlib import redirect_stdout
-import tqdm
+from tqdm import tqdm
 # warning処理
 import warnings
 warnings.filterwarnings('ignore')
