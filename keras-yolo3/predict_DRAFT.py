@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[ ]:
-
-
 import numpy as np
 import sys
 import argparse
@@ -183,16 +177,18 @@ if __name__ == '__main__':
         with redirect_stdout(open(os.devnull, 'w')):
             initialize_model()
         
+        # terminalのクリア
+        os.system('clear')
+        
+        print('Welcome!', end='')
+
         # 音声案内「エンターを押してください」
         sleep(1)
         guide_voice1.play()
         sleep(2)
         guide_voice1.stop()
         
-        # terminalのクリア
-        os.system('clear')
-        
-        tmp = input('Welcome!(press enter)')
+        tmp = input('(press enter)')
         # 'q'が入力されたら終了する
         if tmp == 'q':
             break
