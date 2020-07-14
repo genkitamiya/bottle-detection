@@ -5,6 +5,7 @@ import argparse
 import ntpath
 from yolo import YOLO
 from PIL import Image
+from datetime import datetime
 from contextlib import redirect_stdout
 # warning処理
 import warnings
@@ -15,6 +16,7 @@ if __name__ == '__main__':
     yolo = YOLO()
     pos_path = './test/positive/*.jpg'
     neg_path = './test/negative/*.jpg'
+    timestamp = datetime.now()
 
     # 正解率計算
     total_pos = len(glob.glob(pos_path))
@@ -29,9 +31,13 @@ if __name__ == '__main__':
     # 真陰性率計算
     total_neg = len(glob.glob(neg_path))
     true_neg = total_neg
+    result = []
     for f in glob.glob(neg_path):
         img = Image.open(f)
-        pred_class, _, _ = yolo.detect_image(img)
-        # print(len(pred_class))
+        pred_class, score, image = yolo.detect_image(img)
+        result.append([f, pred_class, score])
+        print("{}: class {}, score {}".format(f, pred_class, score))
         true_neg -= len(pred_class)
+    with open("results_{}.txt".format(timestamp.strftime("%Y%m%d%H%M")), mode="w") as f:
+        f.write(result)
     print('真陰性率：{:.2f}%'.format(true_neg / total_neg*100))

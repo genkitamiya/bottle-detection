@@ -3,4 +3,3 @@ cola
 lemon
 pocari
 tea
-other
