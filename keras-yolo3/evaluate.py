@@ -20,7 +20,7 @@ if __name__ == '__main__':
     # 正解率計算
     total_pos = len(glob.glob(pos_path))
     cnt = 0
-    for f in glob.glob(pos_path):
+    for f in tqdm(glob.glob(pos_path)):
         img = Image.open(f)
         pred_class, _, _ = yolo.detect_image(img)
         # print(f, int(f[f.rfind("/")+1]), pred_class[0])
