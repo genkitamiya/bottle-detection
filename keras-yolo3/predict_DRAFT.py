@@ -189,6 +189,9 @@ if __name__ == '__main__':
         sleep(2)
         guide_voice1.stop()
         
+        # terminalのクリア
+        os.system('clear')
+        
         tmp = input('Welcome!(press enter)')
         # 'q'が入力されたら終了する
         if tmp == 'q':
@@ -217,12 +220,14 @@ if __name__ == '__main__':
                 """
                 カメラ検出
                 """
+                print('商品をスキャンします。', end='')
+
                 # 音声案内「商品を置いてください」
                 guide_voice2.play()
                 sleep(4)
                 guide_voice2.stop()
                 
-                key = input('商品をスキャンします。「Enter」を押して下さい')
+                key = input('「Enter」を押して下さい')
                 pred, score = scan()
                 
                 
@@ -281,16 +286,15 @@ if __name__ == '__main__':
                     
                     key = input('お会計を行いたい商品番号を入力してください。(例：0 3 5): ')
                     
-                    prod_ids = set(map(int, key.split()))
-                    # prod_idがpredに対してOutOfIndexでないかチェック
-                    if not all([prod_id in range(len(pred)) for prod_id in prod_ids]):
+                    try:
+                        prod_ids = set(map(int, key.split()))
+                        # pred内のindexから商品IDに変換する
+                        items = [pred[x] for x in prod_ids]
+                    except:
+                        # value check
                         print('商品番号の誤りを検知しました。0-{}の間の番号を入力してください'.format(len(pred)-1))
                         continue
-                    # 全部範囲内ならbreak
-                    break
-
-                # pred内のindexから商品IDに変換する
-                items = [pred[x] for x in prod_ids]
+                    
                 # カゴに追加
                 checkout_list.extend(items)
 

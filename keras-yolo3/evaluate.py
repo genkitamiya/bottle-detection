@@ -6,6 +6,7 @@ import ntpath
 from yolo import YOLO
 from PIL import Image
 from contextlib import redirect_stdout
+import tqdm
 # warning処理
 import warnings
 warnings.filterwarnings('ignore')
@@ -29,7 +30,7 @@ if __name__ == '__main__':
     # 真陰性率計算
     total_neg = len(glob.glob(neg_path))
     true_neg = total_neg
-    for f in glob.glob(neg_path):
+    for f in tqdm(glob.glob(neg_path)):
         img = Image.open(f)
         pred_class, _, _ = yolo.detect_image(img)
         # print(len(pred_class))
