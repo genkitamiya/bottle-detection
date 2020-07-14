@@ -33,12 +33,12 @@ if __name__ == '__main__':
     total_neg = len(glob.glob(neg_path))
     true_neg = total_neg
 
-    result = []
+    result = ""
     neg_iter = tqdm(glob.glob(neg_path))
     for f in neg_iter:
         img = Image.open(f)
         pred_class, score, image = yolo.detect_image(img)
-        result.append([f, pred_class, score])
+        result += "{}, {}, {} \n".format(f, pred_class, score)
         neg_iter.set_description("{}: class {}, score {}".format(f, pred_class, score))
         true_neg -= len(pred_class)
     with open("results_{}.txt".format(timestamp.strftime("%Y%m%d%H%M")), mode="w") as f:
