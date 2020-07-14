@@ -89,7 +89,7 @@ def show_image(image_path:str, window_title='prediction', duration=5000, scale=2
     """
 
     # imageを開く
-    with Image.open(image_path) as img
+    with Image.open(image_path) as img:
         # 画像サイズ取得
         width = img.width * scale
         height = img.height * scale
