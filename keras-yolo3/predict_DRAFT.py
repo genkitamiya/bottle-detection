@@ -1,11 +1,7 @@
-import numpy as np
-import sys
 import argparse
 import ntpath
-import matplotlib.pyplot as plt
 import picamera
 import pygame.mixer
-import subprocess
 from datetime import datetime
 from yolo import YOLO
 from PIL import Image, ImageOps, ImageTk
@@ -13,7 +9,6 @@ import tkinter as tk
 from time import sleep
 from timeit import default_timer as timer
 import pandas as pd
-from datetime import datetime
 import os
 from contextlib import redirect_stdout
 # warning処理
