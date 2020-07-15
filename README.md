@@ -22,13 +22,13 @@ Keras適合のtiny-yolov3を実装（[github](https://github.com/qqwweee/keras-y
 
 ---
 # 起動方法
-predict.pyを実行
+self-checkout.pyを実行
 ```
-python predict.py --camera # カメラ検出モード
-python predict.py --file # ファイル検出モード
+python self-checkout.py --camera # カメラ検出モード（-cでも可）
+python self-checkout.py --file # ファイル検出モード（-fでも可）
 ```
 >- Bounding Box付き推定画像を出力（path: /output/result_[file name].jpg）
 >- カメラ・jpgファイル入力に対応
 
 ## 売上分析
-predict.py実行後、'Welcome! (press enter)'画面で's'を入力すると起動される。
+self-checkout.py実行後、'Welcome! (press enter)'画面で's'を入力すると起動される。
