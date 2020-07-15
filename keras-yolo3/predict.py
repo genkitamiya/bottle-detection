@@ -12,6 +12,8 @@ import pandas as pd
 import os
 import sys
 from contextlib import redirect_stdout
+import getpass
+import hashlib
 # warning処理
 import warnings
 warnings.filterwarnings('ignore')
@@ -249,7 +251,27 @@ Specify one of the optional arguments: -c, -f\n\
             """
             売上分析モード
             """
-            analyze.initiate('./books/')
+            auth_flag = True
+            wrong_cnt = 0
+
+            # パスワード入力　連続3回まで入力可能(2回まで間違えられる)
+            while auth_flag:
+                # 3回間違えると最初から
+                if 3 <= wrong_cnt:
+                    print('Please try again.')
+                    sleep(2)
+                    break
+                
+                password = getpass.getpass(prompt='input password:')
+            
+                if  hashlib.sha256(password.encode()).hexdigest() == 'f6f8057c7a9964f94fdd4a62ba70ff351ecb7411952760f549d8897b9c4fb201':
+                    auth_flag = False
+                    # 分析モード突入
+                    analyze.initiate('./books/')        
+                else:
+                    print('WRONG!!')
+                    wrong_cnt += 1
+            
             continue
 
         # 会計開始
