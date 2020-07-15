@@ -1,6 +1,15 @@
-https://www.dropbox.com/s/n2d8opjzazmtx6u/trained_weights_final.h5 田宮 7/14朝
+1. 初期重み（yolov3-tiny.h5）
+https://www.dropbox.com/s/js929wv6vz51sd9/yolov3-tiny.h5
 
-https://www.dropbox.com/s/qt4bj0vpotc7w97/trained_weights_final.h5　（荒木のです0714）
+2. 石井さんのモデル（freeze 50 epochs）をannotation_4500で学習したモデル。freeze 10 epochs >> unfreeze 50 epochs (ES 29 epochs) --小山
+https://www.dropbox.com/s/n2d8opjzazmtx6u/trained_weights_final.h5
 
-https://www.dropbox.com/s/57jk4n4dd52fgv3/trained_weights_final_allclass.h5　田宮 7/14午後（85クラス）
+3. 2のモデルをannotation_5000で学習したモデル。freeze 20 epochs >> unfreeze 10 epochs  --荒木
+https://www.dropbox.com/s/qt4bj0vpotc7w97/trained_weights_final.h5
+
+4. 2のモデルを85classes（coco_setの80+ペットボトル5種）にてannotation_4500を学習させたモデル。freeze 50 epochs >> unfreeze 20 epochs --田宮
+https://www.dropbox.com/s/57jk4n4dd52fgv3/trained_weights_final_allclass.h5
 https://www.dropbox.com/s/qut3bw6be82zil3/classes_all.txt　上記モデル用クラス
+
+5. 初期重み（yolo_tiny.h5）をannotation_5000で学習したモデル。freeze 50 epochs >> unfreeze 50 epochs (ES 16 epochs) --小山
+https://www.dropbox.com/s/ejqcls54c1q9d16/trained_weights_final_200715.h5
