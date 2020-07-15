@@ -10,7 +10,7 @@ def y_n_input() -> bool:
     n/N -> False
     """
     while True:
-        input_key = input('はい[y/Y]、いいえ[n/N]？')
+        input_key = input('はい[y/Y]、いいえ[n/N]？:')
         if input_key == 'y' or input_key == 'Y':
             return True
         elif input_key == 'n' or input_key == 'N':
@@ -36,7 +36,7 @@ def date_format_checker(slash=True):
     if not slash:
         dateformat_str = dateformat_str.replace('/', '')
 
-    example_str = '[例：{}年{}月{}日 → {}]: '.format(todayobj.year, todayobj.month, todayobj.day, todayobj.strftime(dateformat_str))
+    example_str = '[例：{}年{}月{}日 → {}]:'.format(todayobj.year, todayobj.month, todayobj.day, todayobj.strftime(dateformat_str))
 
     while True:
         datestr = input(example_str)
