@@ -36,7 +36,7 @@ def date_format_checker(slash=True):
     if not slash:
         dateformat_str = dateformat_str.replace('/', '')
 
-    example_str = '[例：{}年{}月{}日 → {}]: '.format(todayobj.year, todayobj.month, todayobj.day, todayobj.strftime(date))
+    example_str = '[例：{}年{}月{}日 → {}]: '.format(todayobj.year, todayobj.month, todayobj.day, todayobj.strftime(dateformat_str))
 
     while True:
         datestr = input(example_str)
@@ -51,5 +51,5 @@ def date_format_checker(slash=True):
                 print('本日以前の日付を入力してください。', end='')
                 continue
         # チェック抜けたらreturn
-        print(dateobj)
+        # print(dateobj)
         return dateobj
