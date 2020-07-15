@@ -18,7 +18,12 @@ raspiとraspicameraを用いて飲料商品を自動検出するセルフレジ�
 - 売上の分析（売上推移、商品毎の売上、など）
 
 ## モデル
-Keras適合のtiny-yolov3を実装（[github](https://github.com/qqwweee/keras-yolo3.git))。YOLO作者が公開している（[YOLO website](http://pjreddie.com/darknet/yolo/)）学習済みモデルを初期重みとし、検出対象商品の画像データセットを転移学習させた。
+Keras適合のtiny-yolov3を実装（[github](https://github.com/qqwweee/keras-yolo3.git))。YOLO作者が公開している（[YOLO website](http://pjreddie.com/darknet/yolo/)）学習済みモデルを初期重みとし、検出対象商品の画像データセットを転移学習させた。<br>
+
+## 環境条件
+- Python 3.5.3
+- tensorflow 1.14.0
+- keras 2.2.0
 
 ---
 # 起動方法
