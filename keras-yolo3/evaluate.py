@@ -15,8 +15,6 @@ import warnings
 warnings.filterwarnings('ignore')
 
 def eval():
-    # モデルを読み込む
-    yolo = YOLO()
     pos_path = './test/positive/*.jpg'
     neg_path = './test/negative/*.jpg'
 
@@ -48,36 +46,57 @@ def eval():
     with open("test/negresults_{}.txt".format(datetime.now().strftime("%Y%m%d%H%M")), mode="w") as f:
         f.write(result)
     print('真陰性率：{:.2f}%'.format(true_neg / total_neg*100))
-    
+
 if __name__ == '__main__':
+    # モデルを読み込む
     yolo = YOLO()
 
-    while True:
-        key = input('商品をスキャンします。「Enter」を押して下さい')
-        
-        photo_filename = '/tmp/data.jpg'
+    parser = argparse.ArgumentParser(argument_default=argparse.SUPPRESS)
+    """
+    コマンドライン引数
+    """
+    parser.add_argument(
+        '-c', '--camera', default=False, action="store_true",
+        help='カメラ検出モード'
+    )
 
-        with picamera.PiCamera() as camera:
-            camera.resolution = (300,400)
-            camera.start_preview()
-            camera.capture(photo_filename)
-        #try:
-        image = Image.open(photo_filename)
-        image = ImageOps.flip(image)
-        image = ImageOps.mirror(image)
-        #except:
-            #print('読込みエラー、再度入力お願いします。')
-            
-        #else:
-        output_dir = 'output/'
+    parser.add_argument(
+        '-f', '--file', default=False, action="store_true",
+        help='ファイル検出モード'
+    )
 
-        time = datetime.now().strftime('%Y%m%d%H%M%S')
+    FLAGS = parser.parse_args()
 
-        pred, score, r_image = yolo.detect_image(image)
+    if FLAGS.file:
+        eval()
 
-        image_path = output_dir + 'result_{}.jpg'.format(time)
-        r_image.save(image_path)
-        predict.show_image(image_path)
-            
-        if key == 'q':
-            break
+    elif FLAGS.camera:
+        while True:
+            key = input('商品をスキャンします。「Enter」を押して下さい')
+
+            if key == 'q':
+                break
+
+            photo_filename = '/tmp/data.jpg'
+
+            with picamera.PiCamera() as camera:
+                camera.resolution = (300,400)
+                camera.start_preview()
+                camera.capture(photo_filename)
+            #try:
+            image = Image.open(photo_filename)
+            image = ImageOps.flip(image)
+            image = ImageOps.mirror(image)
+            #except:
+                #print('読込みエラー、再度入力お願いします。')
+
+            #else:
+            output_dir = 'output/'
+
+            time = datetime.now().strftime('%Y%m%d%H%M%S')
+
+            pred, score, r_image = yolo.detect_image(image)
+
+            image_path = output_dir + 'result_{}.jpg'.format(time)
+            r_image.save(image_path)
+            predict.show_image(image_path)
