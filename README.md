@@ -1,33 +1,34 @@
 # bottle-detection
-セルフレジのボトル検出するやつ
-# あるもの
-## keras-yolo3
-- yolo検出のやつ
-- 学習済みモデル
-  - yolov3 (動作未確認)
-  - tiny-yolo（2020/07/08 動作確認済み）
+raspiとraspicameraを用いて飲料商品を自動検出するセルフレジシステム。<br>
+<br>
+検出可能な商品は下記５種：
 
-## self_checkout_DEMO
-デモです！
-- Self_checkout_yolo.py: セルフレジ実行スクリプトのデモ（2020/07/08 モデルをtiny-yoloに書き換え中）
-## yolov3.weights & yolov3-tiny.weights
-学習済みの重み
+- コカ・コーラ
+- 午後の紅茶レモンティー
+- ジョージアコーヒー
+- ポカリスエット
+- 綾鷹
+
+
+機能一覧：
+
+- 商品の検出（複数可）
+- 検出商品の商品名及び金額表示
+- １日の売上金額のcsv書き出し
+- 売上の分析（売上推移、商品毎の売上、など）
+
+## モデル
+Keras適合のtiny-yolov3を実装（[github](https://github.com/qqwweee/keras-yolo3.git))。YOLO作者が公開している（[YOLO website](http://pjreddie.com/darknet/yolo/)）学習済みモデルを初期重みとし、検出対象商品の画像データセットを転移学習させた。
 
 ---
-## 推定方法（二通り）
-### A. keras.yolov3標準起動方法
-```
-python yolo_video.py --image
-```
->- デフォルト推定モデルはtiny-yoloに変更済み（path指定だとエラーが起きたため→ 2020/07/08 確認)
->- 推定画像は**出力不可**
-<br>
-
-### B. セルフレジ用起動方法（仮）
+# 起動方法
+predict.pyを実行
 ```
 python predict.py --camera # カメラ検出モード
 python predict.py --file # ファイル検出モード
 ```
->- セルフレジ用に特化するため、yolo_video.pyから不要なinput argumentsを削除
->- 推定画像の出力機能を追加（path: /output/result_[file name].jpg）
->- カメラ・ファイル入力に対応
+>- Bounding Box付き推定画像を出力（path: /output/result_[file name].jpg）
+>- カメラ・jpgファイル入力に対応
+
+## 売上分析
+predict.py実行後、'Welcome! (press enter)'画面で's'を入力すると起動される。

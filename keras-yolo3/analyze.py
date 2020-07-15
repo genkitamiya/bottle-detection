@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import japanize_matplotlib
-from datetime import datetime, timedelta
+from datetime import datetime
 # 自作系
 from registerutil import y_n_input, date_format_checker
 
@@ -22,7 +22,7 @@ def get_df(path, start=None, end=None):
     end: int
       終了日（年月日）
     """
-    
+
     df = pd.concat((pd.read_csv(path+f, index_col=0) for f in os.listdir(path)))
     df['saletime'] = [datetime.strptime(str(x), '%Y/%m/%d %H:%M:%S') for x in df['saletime']]
     tmp_df = df.set_index(['saletime'])
@@ -60,7 +60,7 @@ def sales_history(path, start=None, end=None):
     *スラッシュあり*
     """
     df, label = get_df(path, start, end)
-    
+
     # 日毎に正規化
     df.index = df.index.normalize()
 
@@ -111,11 +111,11 @@ def sales_by_time(path, start=None, end=None):
     plt.show()
 
 def initiate(path):
-    key = input('売上の分析を開始します。「Enter」を押してください')
+    key = input('売上の分析を開始します。「Enter」を押してください。')
 
     while True:
         key = input('ご覧になりたい項目を選択してください。\
-                    \n一日の売上[1]、売上の推移[2]、商品毎の売上[3]、時間帯毎の売上[4]、操作終了[q] ')
+                    \n一日の売上[1]、売上の推移[2]、商品毎の売上[3]、時間帯毎の売上[4]、操作終了[q]:')
 
         if key == 'q':
             print('売上の分析を終了します。')
@@ -123,17 +123,17 @@ def initiate(path):
 
         if key == '1':
             while True:
-                key = input('一日の売上を表示します。ご覧になりたい日にちを選択してください\n本日[1]、その他日にち[2]。')
+                key = input('一日の売上を表示します。ご覧になりたい日にちを選択してください\n本日[1]、その他日にち[2]:')
                 if key == '1':
                     sales_day(path)
                 elif key == '2':
                     # 直接帳簿を読み込むので%Y%m%dでstr変換
-                    print('ご覧になりたい日にちを例のように入力してください）。')
+                    print('ご覧になりたい日にちを例のように入力してください。')
                     date = date_format_checker(slash=slash).strftime('%Y%m%d')
 
                     sales_day(path, date)
                 else:
-                    print('入力エラー。再度キーを押してください。')
+                    print('入力エラー。再度入力してください。')
                     continue
 
                 print('再度一日の売上をご覧になりますか？')
@@ -145,7 +145,7 @@ def initiate(path):
 
         elif key == '2':
             while True:
-                key = input('売上の推移を表示します。ご覧になりたい期間を選択してください\n全期間[1]、指定日から本日までの期間[2]、その他期間[3]。')
+                key = input('売上の推移を表示します。ご覧になりたい期間を選択してください\n全期間[1]、指定日から本日までの期間[2]、その他期間[3]:')
                 if key == '1':
                     sales_history(path)
                 elif key == '2':
@@ -161,10 +161,10 @@ def initiate(path):
 
                     print('次にご覧になりたい期間の終了日を同様に入力してください。')
                     end = date_format_checker(slash=slash).strftime('%Y/%m/%d')
-                    
+
                     sales_history(path, start=start, end=end)
                 else:
-                    print('入力エラー。再度キーを押してください。')
+                    print('入力エラー。再度入力してください。')
                     continue
 
                 print('再度売上の推移をご覧になりますか？')
@@ -176,7 +176,7 @@ def initiate(path):
 
         elif key == '3':
             while True:
-                key = input('商品毎の売上個数を表示します。ご覧になりたい期間を選択してください\n全期間[1]、指定日から本日までの期間[2]、その他期間[3]。')
+                key = input('商品毎の売上個数を表示します。ご覧になりたい期間を選択してください\n全期間[1]、指定日から本日までの期間[2]、その他期間[3]:')
                 if key == '1':
                     sales_by_product(path)
                 elif key == '2':
@@ -187,15 +187,15 @@ def initiate(path):
                     sales_by_product(path, start=start)
                 elif key == '3':
                     # 上に同じ
-                    start = input('ご覧になりたい期間の起算日を例のように入力してください。')
+                    print('ご覧になりたい期間の起算日を例のように入力してください。')
                     start = date_format_checker(slash=slash).strftime('%Y/%m/%d')
 
-                    end = input('次にご覧になりたい期間の終了日を同様に入力してください。')
+                    print('次にご覧になりたい期間の終了日を同様に入力してください。')
                     end = date_format_checker(slash=slash).strftime('%Y/%m/%d')
 
                     sales_by_product(path, start=start, end=end)
                 else:
-                    print('入力エラー。再度キーを押してください。')
+                    print('入力エラー。再度入力してください。')
                     continue
 
                 print('再度商品毎の売上個数をご覧になりますか？')
@@ -207,7 +207,7 @@ def initiate(path):
 
         elif key == '4':
             while True:
-                key = input('時間帯毎の売上を表示します。ご覧になりたい期間を選択してください\n全期間[1]、指定日から本日までの期間[2]、その他期間[3]。')
+                key = input('時間帯毎の売上を表示します。ご覧になりたい期間を選択してください\n全期間[1]、指定日から本日までの期間[2]、その他期間[3]:')
                 if key == '1':
                     sales_by_time(path)
                 elif key == '2':
@@ -226,7 +226,7 @@ def initiate(path):
 
                     sales_by_time(path, start=start, end=end)
                 else:
-                    print('入力エラー。再度キーを押してください。')
+                    print('入力エラー。再度入力してください。')
                     continue
 
                 print('再度時間帯毎の売上をご覧になりますか？')
@@ -237,4 +237,4 @@ def initiate(path):
                     break
 
         else:
-            print('入力エラー。再度キーを押してください。')
+            print('入力エラー。再度入力してください。')

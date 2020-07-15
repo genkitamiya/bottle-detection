@@ -10,7 +10,10 @@ from time import sleep
 from timeit import default_timer as timer
 import pandas as pd
 import os
+import sys
 from contextlib import redirect_stdout
+import getpass
+import hashlib
 # warning処理
 import warnings
 warnings.filterwarnings('ignore')
@@ -174,6 +177,14 @@ if __name__ == '__main__':
 
     FLAGS = parser.parse_args()
 
+    # -cと-fどちらも指定されている/どちらも指定されていない場合異常終了
+    if (not FLAGS.camera and not FLAGS.file) or (FLAGS.camera and FLAGS.file):
+        print("\
+Specify one of the optional arguments: -c, -f\n\
+  -c: camera mode\n\
+  -f: file mode")
+        sys.exit(1)
+
     # モデルを読み込む
     yolo = YOLO()
 
@@ -207,6 +218,7 @@ if __name__ == '__main__':
         # terminalのクリア
         os.system('clear')
         
+        # ロゴが出る
         print('\
 # # # # # # # # # # # # # # # # # # # # # # # # # # # #\n\
     /MME          JMMMMMMMF  /MMMME  /MME      /MM  /ME\n\
@@ -239,7 +251,27 @@ if __name__ == '__main__':
             """
             売上分析モード
             """
-            analyze.initiate('./books/')
+            auth_flag = True
+            wrong_cnt = 0
+
+            # パスワード入力　連続3回まで入力可能(2回まで間違えられる)
+            while auth_flag:
+                # 3回間違えると最初から
+                if 3 <= wrong_cnt:
+                    print('Please try again.')
+                    sleep(2)
+                    break
+                
+                password = getpass.getpass(prompt='input password:')
+            
+                if  hashlib.sha256(password.encode()).hexdigest() == 'f6f8057c7a9964f94fdd4a62ba70ff351ecb7411952760f549d8897b9c4fb201':
+                    auth_flag = False
+                    # 分析モード突入
+                    analyze.initiate('./books/')        
+                else:
+                    print('WRONG!!')
+                    wrong_cnt += 1
+            
             continue
 
         # 会計開始
@@ -255,18 +287,18 @@ if __name__ == '__main__':
                 sleep(4)
                 guide_voice2.stop()
                 
-                key = input('商品をスキャンします。「Enter」を押して下さい')
+                key = input('商品をスキャンします。「Enter」を押して下さい。')
                 pred, score = scan()
                 
             elif FLAGS.file:
                 """
                 データファイル検出
                 """
-                img = input('ファイルパスを入力してください: ')
+                img = input('ファイルパスを入力してください。:')
                 try:
                     image = Image.open(img)
                 except:
-                    print('読込みエラー、再度入力お願いします。')
+                    print('読込みエラー。再度入力してください。')
                     continue
                 else:
                     output_dir = 'output/'
@@ -305,7 +337,7 @@ if __name__ == '__main__':
                 for i, item in enumerate(pred):
                     print('商品番号{} {}の金額は¥{}'.format(i, cls_dic[item][0], cls_dic[item][1]))
 
-                # 商品選択
+                # 会計対象商品選択
                 while True:
                     
                     # 音声案内「会計する商品を選んでください」
@@ -313,16 +345,26 @@ if __name__ == '__main__':
                     sleep(3)
                     guide_voice3.stop()
                     
-                    key = input('お会計を行いたい商品番号を入力してください。(例：0 3 5): ')
+                    key = input('お会計を行いたい商品番号を半角スペース区切りで入力してください。(例：0 3 5)\nすべての商品を会計する場合は何も入力せず「Enter」を押してください。:')
                     
+                    # 入力を分割
+                    splited_key = key.split()
+                    
+                    # 何も入力されていない場合は検出した全商品を買い物カゴに入れる
+                    if len(splited_key) == 0:
+                        # 全商品の商品IDをそのまま渡す
+                        items = pred
+                        break
+
                     try:
-                        prod_ids = set(map(int, key.split()))
-                        # pred内のindexから商品IDに変換する
+                        # 複数回同じ数字が入力された場合も一つのみカゴに入れる
+                        prod_ids = set(map(int, splited_key))
+                        # 指定indexの商品の商品IDを取得・リスト化する
                         items = [pred[x] for x in prod_ids]
                         break
                     except:
                         # value check
-                        print('商品番号の誤りを検知しました。0-{}の間の番号を入力してください'.format(len(pred)-1))
+                        print('商品番号の誤りを検知しました。0-{}の間の番号を入力してください。:'.format(len(pred)-1))
                         continue
                     
                 # カゴに追加
@@ -381,4 +423,4 @@ if __name__ == '__main__':
 
     print('Bye!')
     yolo.close_session()
-
+    sys.exit(0)
