@@ -10,6 +10,7 @@ from time import sleep
 from timeit import default_timer as timer
 import pandas as pd
 import os
+import sys
 from contextlib import redirect_stdout
 # warning処理
 import warnings
@@ -173,6 +174,14 @@ if __name__ == '__main__':
     # )
 
     FLAGS = parser.parse_args()
+
+    # -cと-fどちらも指定されている/どちらも指定されていない場合異常終了
+    if (not FLAGS.camera and not FLAGS.file) or (FLAGS.camera and FLAGS.file):
+        print("\
+Specify one of the optional arguments: -c, -f\n\
+  -c: camera mode\n\
+  -f: file mode")
+        sys.exit(1)
 
     # モデルを読み込む
     yolo = YOLO()
@@ -381,4 +390,4 @@ if __name__ == '__main__':
 
     print('Bye!')
     yolo.close_session()
-
+    sys.exit(0)
