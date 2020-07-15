@@ -22,7 +22,7 @@ def get_df(path, start=None, end=None):
     end: int
       終了日（年月日）
     """
-    
+
     df = pd.concat((pd.read_csv(path+f, index_col=0) for f in os.listdir(path)))
     df['saletime'] = [datetime.strptime(str(x), '%Y/%m/%d %H:%M:%S') for x in df['saletime']]
     tmp_df = df.set_index(['saletime'])
@@ -60,7 +60,7 @@ def sales_history(path, start=None, end=None):
     *スラッシュあり*
     """
     df, label = get_df(path, start, end)
-    
+
     # 日毎に正規化
     df.index = df.index.normalize()
 
@@ -161,7 +161,7 @@ def initiate(path):
 
                     print('次にご覧になりたい期間の終了日を同様に入力してください。')
                     end = date_format_checker(slash=slash).strftime('%Y/%m/%d')
-                    
+
                     sales_history(path, start=start, end=end)
                 else:
                     print('入力エラー。再度キーを押してください。')
@@ -187,10 +187,10 @@ def initiate(path):
                     sales_by_product(path, start=start)
                 elif key == '3':
                     # 上に同じ
-                    start = input('ご覧になりたい期間の起算日を例のように入力してください。')
+                    print('ご覧になりたい期間の起算日を例のように入力してください。')
                     start = date_format_checker(slash=slash).strftime('%Y/%m/%d')
 
-                    end = input('次にご覧になりたい期間の終了日を同様に入力してください。')
+                    print('次にご覧になりたい期間の終了日を同様に入力してください。')
                     end = date_format_checker(slash=slash).strftime('%Y/%m/%d')
 
                     sales_by_product(path, start=start, end=end)
