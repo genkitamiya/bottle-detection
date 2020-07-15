@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import japanize_matplotlib
-from datetime import datetime, timedelta
+from datetime import datetime
 # 自作系
 from registerutil import y_n_input, date_format_checker
 

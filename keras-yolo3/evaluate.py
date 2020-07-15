@@ -1,10 +1,12 @@
 import numpy as np
 import sys
 import glob
+import picamera
 import argparse
 import ntpath
+import predict
 from yolo import YOLO
-from PIL import Image
+from PIL import Image, ImageOps, ImageTk
 from datetime import datetime
 from contextlib import redirect_stdout
 from tqdm import tqdm
@@ -12,7 +14,7 @@ from tqdm import tqdm
 import warnings
 warnings.filterwarnings('ignore')
 
-if __name__ == '__main__':
+def eval():
     # モデルを読み込む
     yolo = YOLO()
     pos_path = './test/positive/*.jpg'
@@ -46,3 +48,36 @@ if __name__ == '__main__':
     with open("test/negresults_{}.txt".format(datetime.now().strftime("%Y%m%d%H%M")), mode="w") as f:
         f.write(result)
     print('真陰性率：{:.2f}%'.format(true_neg / total_neg*100))
+    
+if __name__ == '__main__':
+    yolo = YOLO()
+
+    while True:
+        key = input('商品をスキャンします。「Enter」を押して下さい')
+        
+        photo_filename = '/tmp/data.jpg'
+
+        with picamera.PiCamera() as camera:
+            camera.resolution = (300,400)
+            camera.start_preview()
+            camera.capture(photo_filename)
+        #try:
+        image = Image.open(photo_filename)
+        image = ImageOps.flip(image)
+        image = ImageOps.mirror(image)
+        #except:
+            #print('読込みエラー、再度入力お願いします。')
+            
+        #else:
+        output_dir = 'output/'
+
+        time = datetime.now().strftime('%Y%m%d%H%M%S')
+
+        pred, score, r_image = yolo.detect_image(image)
+
+        image_path = output_dir + 'result_{}.jpg'.format(time)
+        r_image.save(image_path)
+        predict.show_image(image_path)
+            
+        if key == 'q':
+            break
