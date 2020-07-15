@@ -32,7 +32,6 @@ def date_format_checker(slash=True):
 
     dateformat_str = '%Y/%m/%d'
     
-    example_str = 'dummy'
     # スラッシュ入れない教の場合
     if not slash:
         dateformat_str = dateformat_str.replace('/', '')
