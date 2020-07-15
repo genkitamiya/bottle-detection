@@ -1,0 +1,6 @@
+https://www.dropbox.com/s/n2d8opjzazmtx6u/trained_weights_final.h5 田宮 7/14朝
+
+https://www.dropbox.com/s/qt4bj0vpotc7w97/trained_weights_final.h5　（荒木のです0714）
+
+https://www.dropbox.com/s/57jk4n4dd52fgv3/trained_weights_final_allclass.h5　田宮 7/14午後（85クラス）
+https://www.dropbox.com/s/qut3bw6be82zil3/classes_all.txt　上記モデル用クラス
