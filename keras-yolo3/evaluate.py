@@ -30,7 +30,7 @@ def eval():
         # print(f, int(f[f.rfind("/")+1]), pred_class[0])
         result += "{}, {}, {} \n".format(f, pred_class, score)
         cnt += int(f[f.rfind("/")+1]) == pred_class[0]
-    with open("posresults_{}.txt".format(datetime.now().strftime("%Y%m%d%H%M")), mode="w") as f:
+    with open("test/posresults_{}.txt".format(datetime.now().strftime("%Y%m%d%H%M")), mode="w") as f:
         f.write(result)
     print('正解率：{:.2f}%'.format(cnt / total_pos*100)) #Accuracy計算
 
@@ -45,7 +45,7 @@ def eval():
         result += "{}, {}, {} \n".format(f, pred_class, score)
         neg_iter.set_description("{}: class {}, score {}".format(f, pred_class, score))
         true_neg -= len(pred_class)
-    with open("negresults_{}.txt".format(datetime.now().strftime("%Y%m%d%H%M")), mode="w") as f:
+    with open("test/negresults_{}.txt".format(datetime.now().strftime("%Y%m%d%H%M")), mode="w") as f:
         f.write(result)
     print('真陰性率：{:.2f}%'.format(true_neg / total_neg*100))
     

@@ -51,5 +51,5 @@ def date_format_checker(slash=True):
                 print('本日以前の日付を入力してください。', end='')
                 continue
         # チェック抜けたらreturn
-        # print(dateobj)
+
         return dateobj
