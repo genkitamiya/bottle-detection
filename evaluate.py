@@ -4,7 +4,6 @@ import glob
 import picamera
 import argparse
 import ntpath
-import predict
 from yolo import YOLO
 from PIL import Image, ImageOps, ImageTk
 from datetime import datetime

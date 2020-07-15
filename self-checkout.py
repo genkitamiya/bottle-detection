@@ -114,7 +114,7 @@ def initialize_model():
     システム起動時処理
     yoloの準備運動
     """
-    image = Image.open('../samples/output.jpg')
+    image = Image.open('./samples/output.jpg')
     _, _, _ = yolo.detect_image(image)
 
 def check_book(datestr:str):
